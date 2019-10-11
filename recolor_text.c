@@ -1,6 +1,7 @@
 /* Laura ALANOIX */
 /* Ayoub NOUAMANI*/
 // Zineb Boumedris
+/* Eric JIN*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "game.h"
