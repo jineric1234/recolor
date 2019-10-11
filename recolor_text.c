@@ -1,4 +1,6 @@
-//co-auteur Zineb Boumedris
+/* Laura ALANOIX */
+/* Ayoub NOUAMANI*/
+// Zineb Boumedris
 #include <stdlib.h>
 #include <stdio.h>
 #include "game.h"
