@@ -88,8 +88,9 @@ int main(void){
         game_delete(g);
         game_delete(gcopy);
     }
+
     return EXIT_SUCCESS;
 
 }/* Laura ALANOIX */
 /* Ayoub NOUAMANI*/
-/* Eric JIN*/
+/* Eric JIN */
