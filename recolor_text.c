@@ -1,7 +1,7 @@
 /* Laura ALANOIX */
 /* Ayoub NOUAMANI*/
 // Zineb Boumedris
-/* Eric JIN*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "game.h"
@@ -88,8 +88,8 @@ int main(void){
         game_delete(g);
         game_delete(gcopy);
     }
-
     return EXIT_SUCCESS;
 
 }/* Laura ALANOIX */
 /* Ayoub NOUAMANI*/
+/* Eric JIN*/
