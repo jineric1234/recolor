@@ -25,7 +25,7 @@ bool test_game_new(){
         1,3,3,1,1,2,2,3,2,0,0,2,
         2,0,2,3,0,1,1,1,2,3,0,1
     };
-    game g = game_new(cell,12);
+    game g = game_new(cell,SIZE);
     if(g == NULL){
         fprintf(stderr, "error: invalid game new !\n");
         return false;
@@ -55,7 +55,7 @@ bool test_game_new(){
 }
 
 /* ********* TEST_NEW_EMPTY ********* */
-bool test_game_new_empty(){
+bool test_game_new_empty(int k){
     game g = game_new_empty();
     if (g == NULL){
         fprintf(stderr, "Error: invalid recolor init!\n");
@@ -75,7 +75,29 @@ bool test_game_new_empty(){
             }
         }
     }
+
+    game_play_one_move(g, k);
     game_delete(g);
+    game v = game_new_empty();
+
+    if(game_nb_moves_max(v)!=0){
+        fprintf(stderr, "Error: The maximum number of moves is not set to 0 n.2 ");
+        game_delete(v);
+        return false;
+    }
+
+
+    for(unsigned int x=0; x<SIZE; x++){
+        for(unsigned int y=0; y<SIZE; y++){
+            if(game_cell_current_color(v,x,y)!=0) {
+                fprintf(stderr, "Error: cells not have the default color (RED) n.2!\n");
+                game_delete(v);
+                return false;
+            }
+        }
+    }
+
+    game_delete(v);
     return true;
 }
 
@@ -83,7 +105,7 @@ bool test_game_new_empty(){
 
 
 /* ********* TEST_GAME_SET_CELL_INIT ********* */
-bool test_game_set_cell_init(){
+bool test_game_set_cell_init(int k){
   game g = game_new_empty();
   if (g == NULL){
     fprintf(stderr, "Error: invalid recolor init!\n");
@@ -98,11 +120,18 @@ bool test_game_set_cell_init(){
       }
 
     }
+  } 
+
+  for(unsigned int x=0; x<SIZE;x++){
+    for(unsigned int y=0;y<SIZE; y++){
+      game_set_cell_init(g,x,y,k);
+      if (game_cell_current_color(g, x, y)!=k){
+      fprintf(stderr,"Error, fail set cell init ! \n");
+      return false;
+
+    }
   }
-  game_set_cell_init(g, 0, 0, 2);
-  if (game_cell_current_color(g, 0, 0)!=2){
-    fprintf(stderr,"Error, fail set cell init ! ");
-    return false;
+  game_play_one_move(g, k);
   }
   game_delete(g);
   return true;
@@ -129,10 +158,10 @@ int main(int argc, char *argv[]) {
   if (strcmp("new", argv[1]) == 0)
     ok = test_game_new();
   else if (strcmp("newempty", argv[1]) == 0)
-    ok = test_game_new_empty();
+    ok = test_game_new_empty(2);
   
   else if (strcmp("setcell", argv[1]) == 0)
-    ok = test_game_set_cell_init();
+    ok = test_game_set_cell_init(2);
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);
