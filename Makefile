@@ -2,7 +2,7 @@ CC = gcc
 LDFLAGS = -lgame -L.
 CFLAGS = -Wall -std=c99
 
-all : recolor_text
+all : recolor_text test_game_lalanoix test_game_anouamani test_game_zboumedris test_game_ejin
 
 recolor_text : recolor_text.o libgame.a
 	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
@@ -62,4 +62,4 @@ libgame.a : game.o game_io.o
 .PHONY: clean test test_lalanoix test_anouamani test_ejin test_zboumedris
 
 clean :
-	rm -f libgame.a recolor_text.o recolor_text
+	rm -f libgame.a recolor_text.o test_game_lalanoix.o test_game_anouamani.o test_game_zboumedris.o test_game_ejin.o recolor_text test_game_lalanoix test_game_anouamani test_game_zboumedris test_game_ejin
