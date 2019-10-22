@@ -13,7 +13,11 @@ bool test_game_set_max_moves(){
     fprintf(stderr, "Error: game not found!\n");
     return false;
   }
+<<<<<<< HEAD
   game_set_max_moves(g, SIZE);
+=======
+  game_set_max_moves(g,SIZE);
+>>>>>>> 969a6bc2c88e91d9f1ec374635beb9672d1fa2fa
   if(game_nb_moves_max(g)!= SIZE){
     fprintf(stderr, "Error: nombre max de jouer!\n");
     game_delete(g);
@@ -50,7 +54,11 @@ bool test_game_cell_current_color(){
     for ( uint x = 0; x < SIZE; x++){
       unsigned int c=game_cell_current_color(g, x, y);
       if  (c<0 || c>3){
+<<<<<<< HEAD
         fprintf(stderr,  "Error: la couleur n'existe pas!\n");
+=======
+        fprintf(stderr,  "Error: game not found!\n");
+>>>>>>> 969a6bc2c88e91d9f1ec374635beb9672d1fa2fa
         game_delete(g);
         return false;
       }
