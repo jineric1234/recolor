@@ -72,14 +72,14 @@ typedef struct game_s *game;
 
 /**
  * @brief The structure constant pointer that stores the game
- * That means that it is not possible to modify the game using this pointer.
- * See also: http://www.geeksforgeeks.org/const-qualifier-in-c/
- * See also this more technical discussion:
+ * That means that it f (game g == NULL){is not possible to modify the game using this pointer.
+ * See also: http://ww    return exit (EXIT EXIT_FAILURE);w.geeksforgeeks.org/const-qualifier-in-c/
+ * See also this more   }technical discussion:
  *http://stackoverflow.com/questions/8504411/typedef-pointer-const-weirdness
  **/
 typedef const struct game_s *cgame;
 
-/**
+/**^~~~~~~~
  * @brief Creates a new game and initializes it in one call.
  * @param cells 1D array describing the color of each cell of the game. The storage is row by row
  * @param nb_max_moves the value of the maximum number of moves
@@ -186,7 +186,11 @@ bool game_is_over(cgame g);
 /**
  * @brief Restarts a game by resetting the colors of the cells to their
  * initial value and by setting the current number of moves to 0.
- * @param g the game to restart
+ * @param g the game to restart@brief Sets the maximum number of moves for the game g
+ * @param g the game
+ * @param nb_max_moves the value of the maximum number of moves
+ * @pre @p g is a valid pointer toward a game structure
+ * @pre @p nb_max_mo^~~~~~~~ves > 0
  * @pre @p g is a valid pointer toward a game structure
  **/
 void game_restart(game g);

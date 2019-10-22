@@ -10,7 +10,7 @@ recolor_text : recolor_text.o libgame.a
 test_game_lalanoix: test_game_lalanoix.o game.o
 test_game_anouamani: test_game_anouamani.o game.o
 test_game_ejin: test_game_ejin.o game.o
-test_game_zboumedris: test_game_zboumedris.o game.o
+test_game_zboumedris: test_game_zboumedris.o game02.o
 
 test_game_lalanoix.o: test_game_lalanoix.c game.h
 test_game_anouamani.o: test_game_anouamani.c game.h
