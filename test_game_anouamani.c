@@ -128,6 +128,10 @@ bool test_copy(int k){
 }
 
 
+
+/* ********** TEST GAME MAIN ********** */
+
+
 void usage(int argc, char *argv[]) {
   fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
   exit(EXIT_FAILURE);
