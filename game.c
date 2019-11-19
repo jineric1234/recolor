@@ -72,16 +72,18 @@ game game_new_empty(){
 void game_set_cell_init(game g, uint x, uint y, color c);{}
 
 
-void game_set_max_moves(game g, uint nb_max_moves){}
+void game_set_max_moves(game g, uint nb_max_moves){
+    g.nbmax = nb_max_moves;
+}
 
 
 uint game_nb_moves_max(cgame g){
-    return 0;
+    return g.nbmax;
 }
 
 
 color game_cell_current_color(cgame g, uint x, uint y){
-    return 0;
+    return g.cell[x][y];
 }
 
 
