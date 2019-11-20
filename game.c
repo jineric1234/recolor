@@ -8,47 +8,6 @@
 
 
 
-color cell_init[]= {
-        0,0,0,2,0,2,1,0,1,0,3,0,
-        0,3,3,1,1,1,1,3,2,0,1,0,
-        1,0,1,2,3,2,3,2,0,3,3,2,
-        2,3,1,0,3,2,1,1,1,2,2,0,
-        2,1,2,3,3,3,3,2,0,1,0,0,
-        0,3,3,0,1,1,2,3,3,2,1,3,
-        1,1,2,2,2,0,0,1,3,1,1,2,
-        1,3,1,3,1,0,1,0,1,3,3,3,
-        0,3,0,1,0,0,2,1,1,1,3,0,
-        1,3,1,0,0,0,3,2,3,1,0,0,
-        1,3,3,1,1,2,2,3,2,0,0,2,
-        2,0,2,3,0,1,1,1,2,3,0,1
-};
-
-
-color cell[]= {
-        0,0,0,2,0,2,1,0,1,0,3,0,
-        0,3,3,1,1,1,1,3,2,0,1,0,
-        1,0,1,2,3,2,3,2,0,3,3,2,
-        2,3,1,0,3,2,1,1,1,2,2,0,
-        2,1,2,3,3,3,3,2,0,1,0,0,
-        0,3,3,0,1,1,2,3,3,2,1,3,
-        1,1,2,2,2,0,0,1,3,1,1,2,
-        1,3,1,3,1,0,1,0,1,3,3,3,
-        0,3,0,1,0,0,2,1,1,1,3,0,
-        1,3,1,0,0,0,3,2,3,1,0,0,
-        1,3,3,1,1,2,2,3,2,0,0,2,
-        2,0,2,3,0,1,1,1,2,3,0,1
-};
-
-typedef unsigned int uint;
-
-/* typedef enum color_e {
-    RED,
-    GREEN,
-    BLUE,
-    YELLOW,
-    NB_COLORS
-} color; */
-
 struct game_s {
     color *cell; //pointe vers la grille du jeu
     color *cell_init; //pointe vers la grille du jeu initiale
@@ -56,11 +15,10 @@ struct game_s {
     uint nbmovecur; //nombre de mouvements actuel
 };
 
-typedef const struct game_s *cgame;
 
 
 game game_new(color *cells, uint nb_moves_max){
-    game g=(game)malloc(sizeof(game));
+    game g=(game)malloc(sizeof(struct game_s));
     if (g==NULL){
         fprintf(stderr,"errrr");
         exit(1);
@@ -82,7 +40,7 @@ game game_new(color *cells, uint nb_moves_max){
 
 
 game game_new_empty(){
-    game g=(game)malloc(sizeof(game));
+    game g=(game)malloc(sizeof(struct game_s));
     if (g==NULL){
         fprintf(stderr,"errrr\n");
         exit(1);
@@ -178,7 +136,7 @@ void game_restart(game g){
    
     g->nbmovecur=0;
       for(int i=0;i<SIZE*SIZE;i++){
-         g->cell[i]=cell_init[i];
+         g->cell[i]=g->cell_init[i];
     
      } 
     }
