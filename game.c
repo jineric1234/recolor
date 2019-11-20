@@ -149,12 +149,36 @@ game game_copy(cgame g){
 }
 
 
-void game_delete(game g){return;}
+void game_delete(game g){
+
+    free(g->cell_init);
+    g->cell_init=NULL;
+    free(g->cell);
+    g->cell=NULL;
+    free(g);
+    g=NULL;
+    }
 
 
 bool game_is_over(cgame g){
-    return false;
+   
+    if (g->nbmovecur>g->nbmax){
+             return false;
+         }
+    for(int i=0;i<(SIZE*SIZE)-1;i++){
+         if(g->cell[i]==g->cell[i+1]){
+    return true;
+} 
 }
+return false;
+ }
 
 
-void game_restart(game g){return;}
+void game_restart(game g){
+   
+    g->nbmovecur=0;
+      for(int i=0;i<SIZE*SIZE;i++){
+         g->cell[i]=cell_init[i];
+    
+     } 
+    }
