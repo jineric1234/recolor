@@ -5,7 +5,7 @@
 #include <string.h>
 #include "game.h"
 #include "game_io.h"
-
+#include "game.c"
 
 bool test_game_set_max_moves(int k){
   game g = game_new_empty();

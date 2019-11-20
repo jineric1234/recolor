@@ -5,7 +5,7 @@
 #include <string.h>
 #include "game_io.h"
 #include "game.h"
-
+#include "game.c"
 /* ********** USAGE ********** */
 
 void usage(int argc, char *argv[]) {

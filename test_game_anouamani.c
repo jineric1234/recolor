@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "game.c"
 #include "game.h"
 #include "game_io.h"
 
