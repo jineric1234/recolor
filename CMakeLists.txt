@@ -9,9 +9,12 @@ set(CMAKE_C_FLAGS "-std=c99 -g -Wall")
 add_executable(recolor_text game.h game_io.h recolor_text.c)
 #les dépendances sont calculées automatiquement
 
-add_library(game game.c game_io.o)
+add_library(game game.c game_io.c)
 
 target_link_libraries(recolor_text game)
+
+
+#Tests
 
 add_executable(test_game_ejin test_game_ejin.c)
 add_executable(test_game_lalanoix test_game_lalanoix.c)
