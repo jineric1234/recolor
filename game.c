@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "game_io.h"
-#define SIZE 12
+
 
 
 
@@ -109,17 +109,17 @@ game game_copy(cgame g){
 
 void game_delete(game g){
 
-    free(g->cell_init);
-    g->cell_init=NULL;
-    free(g->cell);
-    g->cell=NULL;
+free(g->cell);
+free(g->cell_init);
     free(g);
     g=NULL;
     }
 
 
 bool game_is_over(cgame g){
-   
+   if(g==NULL){
+       exit(EXIT_FAILURE);
+   }
     if (g->nbmovecur>g->nbmax){
              return false;
          }
@@ -133,7 +133,9 @@ return false;
 
 
 void game_restart(game g){
-   
+    if(g==NULL){
+       exit(EXIT_FAILURE);
+   }
     g->nbmovecur=0;
       for(int i=0;i<SIZE*SIZE;i++){
          g->cell[i]=g->cell_init[i];
