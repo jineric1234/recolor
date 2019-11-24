@@ -136,6 +136,37 @@ void game_play_one_move(game g, color c){
         fprintf(stderr, "Couleur innexistante\n");
         exit(EXIT_FAILURE);
     }
+    uint valeur = game_cell_current_color(g,0,0);
+    game_set_cell_init(g,0,0,c);
+    if(valeur==game_cell_current_color(g,1,0)){
+       game_set_cell_init(g,1,0,c);
+    }
+    for (uint x=0;x<SIZE-1;x++){
+        for (uint y=1;y<SIZE-1;y++){
+           
+            if(game_cell_current_color(g,x,y)==valeur){
+                if(game_cell_current_color(g,x,y)==game_cell_current_color(g,x,y+1)){
+                    game_set_cell_init(g,x,y+1,c);
+                    
+                }
+                game_set_cell_init(g,x,y,c);
+               
+                if(game_cell_current_color(g,x+1,y)==valeur){
+                    game_set_cell_init(g,x+1,y,c);
+                     if(game_cell_current_color(g,x+1,y+1)==valeur){
+                    game_set_cell_init(g,x+1,y+1,c);
+                    
+                }
+                }
+                   
+                valeur = game_cell_current_color(g,0,0);
+          }  
+          
+        
+            
+            }
+
+        }
     g->nbmovecur=g->nbmovecur+1;
 }
     /* laura test

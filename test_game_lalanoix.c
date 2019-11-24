@@ -47,7 +47,7 @@ bool test_game_restart(){
       unsigned int cellc =game_cell_current_color(g,x,y);
       if(cellc<0 || cellc>3){
         fprintf(stderr, "Error: cell problem\n");
-        game_delete(g);
+
         return false;
       }
     }
@@ -59,7 +59,7 @@ bool test_game_restart(){
 /* ********** TEST IS OVER ********** */
 
 bool test_game_is_over(){
-  //game g= game_new_empty();
+  
 
   color cell[]= {
       0,0,0,2,0,2,1,0,1,0,3,0,
@@ -84,7 +84,7 @@ bool test_game_is_over(){
   }
 
 
-  if(game_nb_moves_cur(g)>SIZE){
+  if(game_nb_moves_cur(g)>game_nb_moves_max(g)){
     fprintf(stderr, "Error!\n");
     return false;
   }
@@ -97,7 +97,7 @@ bool test_game_is_over(){
   if(!game_is_over(g)){
     fprintf(stderr, "Error 404!\n");
     return false;
-    game_delete(g);
+    
   }
   game_delete(g);
   return true;
