@@ -99,7 +99,7 @@ color game_cell_current_color(cgame g, uint x, uint y){
         fprintf(stderr,"not enogh memory!\n");
         exit (EXIT_FAILURE);
     }
-    return  g->cell[(SIZE-y-1)*SIZE+x];
+    return  g->cell[(SIZE*y)+x];
 }
 
 game game_copy(cgame g){
@@ -132,10 +132,40 @@ void game_play_one_move(game g, color c){
         fprintf(stderr, "POINTEUR null\n");
         exit(EXIT_FAILURE);
     }
-    else if (c>=NB_COLORS){
+    if (c<0 || c>=NB_COLORS){
         fprintf(stderr, "Couleur innexistante\n");
         exit(EXIT_FAILURE);
-    }else{
+    }
+    g->nbmovecur=g->nbmovecur+1;
+}
+    /* laura test
+    uint valeur = game_cell_current_color(g,0,0);
+    printf("%u %u %u\n",game_cell_current_color(g,0,0),game_cell_current_color(g,0,1),game_cell_current_color(g,0,2));
+    ;
+    uint i=0;
+    while(g->cell[i]==valeur){
+
+if(g->cell[i]==g->cell[i+1]&& i<SIZE*SIZE-1){
+    g->cell[i+1]=c;
+
+}
+if(g->cell[i]==g->cell[i+12] && i<SIZE*SIZE-1){
+    g->cell[i+12]=c;
+
+}
+i=i+12;
+
+g->cell[0]=c;
+valeur=game_cell_current_color(g,0,0);
+    }
+
+
+ g->nbmovecur=g->nbmovecur+1;
+
+}
+        
+    */
+    /* ayoub
         uint valeur= game_cell_current_color(g->cell, 0, 0);
         for (uint i=0; i>SIZE*SIZE; i++){
             if (g->tab[x]==true){
@@ -235,7 +265,8 @@ void game_play_one_move(game g, color c){
             }
         }
     }
-}
+    */
+
 
 void game_delete(game g){
 if(g==NULL){
