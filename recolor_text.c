@@ -23,14 +23,14 @@ game game_default(){
  1,3,1,0,0,0,3,2,3,1,0,0,
  1,3,3,1,1,2,2,3,2,0,0,2,      
  2,0,2,3,0,1,1,1,2,3,0,1,
-         
-
 };
+
+
     int i=0;
     for (int x= 0; x <SIZE; x++){
         for(int y= 0; y <SIZE; y++){
             game_set_cell_init(dgame, x, y, cell[i]);
-            i=i+1;
+            i++;
         }
     }
     return dgame;
@@ -60,7 +60,7 @@ int main(void){
     game_set_max_moves(g, SIZE);
     game_display(g);
 
-    while (game_is_over(g)==false){
+    while (game_is_over(gcopy)==false){
         char value= getchar();
         if (value >= 48 && value <= 51){ /*valeur de 1, 2, 3 et 0*/
             value=value-48;
@@ -70,11 +70,9 @@ int main(void){
         /* Restart le jeu */
         if (value == 82 || value == 114){ /*valeur de r et R*/
             game_restart(g);
-            game_nb_moves_cur(gcopy);
-            game_set_max_moves(gcopy, SIZE);
-            game_display(gcopy);
-
+            game_display(g);
         }
+        
         /* Quitter le jeu */
         if (value == 81 || value == 113){ /*valeur de q et Q*/
             printf("DOMMAGE\n");
@@ -86,7 +84,7 @@ int main(void){
 
     }
     if(game_nb_moves_cur(g)<=game_nb_moves_max(g)){
-        printf("BRAVO");
+        printf("BRAVO\n");
         game_delete(g);
         game_delete(gcopy);
     }
