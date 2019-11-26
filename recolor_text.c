@@ -60,7 +60,7 @@ int main(void){
     game_set_max_moves(g, SIZE);
     game_display(g);
 
-    while (game_is_over(gcopy)==false){
+    while (game_is_over(g)==false){
         char value= getchar();
         if (value >= 48 && value <= 51){ /*valeur de 1, 2, 3 et 0*/
             value=value-48;
