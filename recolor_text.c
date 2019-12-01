@@ -9,7 +9,7 @@
 
 
 game game_default(){
-    game dgame = game_new_empty();
+    
     color cell[]= {
  0,0,0,2,0,2,1,0,1,0,3,0,
  0,3,3,1,1,1,1,3,2,0,1,0,
@@ -24,15 +24,7 @@ game game_default(){
  1,3,3,1,1,2,2,3,2,0,0,2,      
  2,0,2,3,0,1,1,1,2,3,0,1,
     };
-
-
-    int i=0;
-    for (int x= 0; x <SIZE; x++){
-        for(int y= 0; y <SIZE; y++){
-            game_set_cell_init(dgame, x, y, cell[i]);
-            i++;
-        }
-    }
+    game dgame = game_new(cell, SIZE);
     return dgame;
 }
 
