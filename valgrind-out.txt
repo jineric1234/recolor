@@ -1,7 +1,7 @@
 ==5567== Memcheck, a memory error detector
 ==5567== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
 ==5567== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==5567== Command: ./recolor_text memory leak
+==5567== Command: ./recolor_text memory leak ?
 ==5567== Parent PID: 4332
 ==5567== 
 --5567-- 
