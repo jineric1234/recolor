@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch a.out",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/recolor_text",
+            "args": [ "20" ],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [ ... ]
+        }
+    ]
+}
