@@ -442,6 +442,10 @@ void game_restart(game g){
         exit(EXIT_FAILURE);
    }
     g->nbmovecur=0;
+    if (g->cell_init==NULL || g->tab_init==NULL || g->cell==NULL || g->tab==NULL){
+        fprintf(stderr, "erruer structure   \n");
+        exit(EXIT_FAILURE);
+    }
     for(int i=0;i<SIZE*SIZE;i++){
         g->cell[i]=g->cell_init[i];
         g->tab[i]=g->tab_init[i];
