@@ -1,9 +1,0 @@
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/rebuild_cache.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/recolor_text.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/edit_cache.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/test_game_zboumedris.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/test_game_ejin.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/game.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/test_game_lalanoix.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/test.dir
-/home/ayoub/git/recolor_clone/recolor-tm7-e/CMakeFiles/test_game_anouamani.dir

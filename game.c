@@ -18,49 +18,19 @@ struct game_s {
 
 
 game game_new(color *cells, uint nb_moves_max){
-    if (nb_moves_max==0){
-        fprintf(stderr,"moves max egale a zero");
-        exit(EXIT_FAILURE);
-    }
-    if (cells==NULL){
-        fprintf(stderr,"cells egale a null\n");
-        exit(EXIT_FAILURE);
-    }
     game g=(game)malloc(sizeof(struct game_s));
     if (g==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
+        fprintf(stderr,"errrr");
         exit(EXIT_FAILURE);
     }
     g->nbmax=nb_moves_max;
     g->nbmovecur=0;
     g->cell =(color*)malloc(SIZE*SIZE*sizeof(color));
-    if (g->cell==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g);
-        exit(EXIT_FAILURE);
-    }
     g->cell_init =(color*)malloc(SIZE*SIZE*sizeof(color));
-    if (g->cell_init==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g->cell);
-        free(g);
-        exit(EXIT_FAILURE);
-    }
     g->tab =(bool*)malloc(SIZE*SIZE*sizeof(bool));
-    if (g->tab==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g->cell_init);
-        free(g->cell);
-        free(g);
-        exit(EXIT_FAILURE);
-    }
     g->tab_init =(bool*)malloc(SIZE*SIZE*sizeof(bool));
-    if (g==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g->cell_init);
-        free(g->cell);
-        free(g->tab);
-        free(g);
+    if (g->cell_init==NULL || g->cell==NULL || g->tab==NULL || g->tab_init==NULL){
+        fprintf(stderr, "pointeur game_new null\n");
         exit(EXIT_FAILURE);
     }
     for(int i=0;i<SIZE*SIZE;i++){
@@ -84,37 +54,15 @@ game game_new_empty(){
         fprintf(stderr,"errrr\n");
         exit(1);
     }
-    g->nbmax=0;
+    g->nbmax=12;
     g->nbmovecur=0;
     g->cell =(color*)malloc(SIZE*SIZE*sizeof(color));
-    if (g->cell==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g);
-        exit(EXIT_FAILURE);
-    }
     g->cell_init =(color*)malloc(SIZE*SIZE*sizeof(color));
-    if (g->cell_init==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g->cell);
-        free(g);
-        exit(EXIT_FAILURE);
-    }
     g->tab =(bool*)malloc(SIZE*SIZE*sizeof(bool));
-    if (g->tab==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g->cell_init);
-        free(g->cell);
-        free(g);
-        exit(EXIT_FAILURE);
-    }
     g->tab_init =(bool*)malloc(SIZE*SIZE*sizeof(bool));
-    if (g==NULL){
-        fprintf(stderr,"jeu non initialisé\n");
-        free(g->cell_init);
-        free(g->cell);
-        free(g->tab);
-        free(g);
-        exit(EXIT_FAILURE);
+    if (g->cell_init==NULL || g->cell==NULL){
+        fprintf(stderr,"errror\n");
+        exit(1);
     }
     for(int i=0;i<SIZE*SIZE;i++){
         g->cell_init[i]=0;
@@ -407,7 +355,6 @@ void game_play_one_move(game g, color c){
 
 void game_delete(game g){
     if(g==NULL){
-        fprintf(stderr, "pointeur null\n");
         exit(EXIT_SUCCESS);
     }
     free(g->cell);
@@ -415,6 +362,7 @@ void game_delete(game g){
     free(g->tab);
     free(g->tab_init);
     free(g);
+    g=NULL;
 }
 
 
@@ -438,8 +386,7 @@ bool game_is_over(cgame g){
 
 void game_restart(game g){
     if(g==NULL){
-        fprintf(stderr, "pointeur null\n");
-        exit(EXIT_FAILURE);
+       exit(EXIT_FAILURE);
    }
     g->nbmovecur=0;
     for(int i=0;i<SIZE*SIZE;i++){

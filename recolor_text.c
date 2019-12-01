@@ -23,7 +23,7 @@ game game_default(){
  1,3,1,0,0,0,3,2,3,1,0,0,
  1,3,3,1,1,2,2,3,2,0,0,2,      
  2,0,2,3,0,1,1,1,2,3,0,1,
-    };
+};
 
 
     int i=0;
@@ -56,6 +56,7 @@ void game_display(game g){
 
 int main(void){
     game g = game_default();
+    game gcopy = game_copy(g);
     game_set_max_moves(g, SIZE);
     game_display(g);
 
@@ -76,6 +77,7 @@ int main(void){
         if (value == 81 || value == 113){ /*valeur de q et Q*/
             printf("DOMMAGE\n");
             game_delete(g);
+            game_delete(gcopy);
             return EXIT_SUCCESS;
         }
 
@@ -84,6 +86,7 @@ int main(void){
     if(game_nb_moves_cur(g)<=game_nb_moves_max(g)){
         printf("BRAVO\n");
         game_delete(g);
+        game_delete(gcopy);
     }
 
     return EXIT_SUCCESS;
