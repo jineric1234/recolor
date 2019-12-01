@@ -190,7 +190,7 @@ bool game_is_over(cgame g);
  * @param g the game
  * @param nb_max_moves the value of the maximum number of moves
  * @pre @p g is a valid pointer toward a game structure
- * @pre @p nb_max_mo^~~~~~~~ves > 0
+ * @pre @p nb_max_moves > 0
  * @pre @p g is a valid pointer toward a game structure
  **/
 void game_restart(game g);
