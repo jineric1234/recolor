@@ -2,11 +2,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch a.out",
+            "name": "(gdb) recolor_text",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/recolor_text",
             "args": [ "20" ],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [ ... ]
+        },
+        {
+            "name": "(gdb) test copy",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_game_anouamani",
+            "args": [ "copy" ],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
