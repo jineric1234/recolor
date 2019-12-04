@@ -59,9 +59,15 @@ Solution: 3 1 3 1 0 3 1 0 1 3 2 0
 typedef unsigned int uint;
 
 /**
- * @brief Different colors (red=0, green=1, blue=2 or yellow=3) used in the game
+ * @brief Different colors used in the game
  **/
-typedef enum color_e {RED, GREEN, BLUE, YELLOW, NB_COLORS} color;
+typedef uint color;
+
+#define RED 0
+#define GREEN 1 // deprecated
+#define BLUE 2 // deprecated
+#define YELLOW 3  // deprecated
+#define NB_COLORS 4 // deprecated
 
 /**
  * @brief The structure pointer that stores the game. To create a game, you can proceed in two ways:
@@ -72,14 +78,14 @@ typedef struct game_s *game;
 
 /**
  * @brief The structure constant pointer that stores the game
- * That means that it f (game g == NULL){is not possible to modify the game using this pointer.
- * See also: http://ww    return exit (EXIT EXIT_FAILURE);w.geeksforgeeks.org/const-qualifier-in-c/
- * See also this more   }technical discussion:
+ * That means that it is not possible to modify the game using this pointer.
+ * See also: http://www.geeksforgeeks.org/const-qualifier-in-c/
+ * See also this more technical discussion:
  *http://stackoverflow.com/questions/8504411/typedef-pointer-const-weirdness
  **/
 typedef const struct game_s *cgame;
 
-/**^~~~~~~~
+/**
  * @brief Creates a new game and initializes it in one call.
  * @param cells 1D array describing the color of each cell of the game. The storage is row by row
  * @param nb_max_moves the value of the maximum number of moves
@@ -186,13 +192,62 @@ bool game_is_over(cgame g);
 /**
  * @brief Restarts a game by resetting the colors of the cells to their
  * initial value and by setting the current number of moves to 0.
- * @param g the game to restart@brief Sets the maximum number of moves for the game g
- * @param g the game
- * @param nb_max_moves the value of the maximum number of moves
- * @pre @p g is a valid pointer toward a game structure
- * @pre @p nb_max_mo^~~~~~~~ves > 0
+ * @param g the game to restart
  * @pre @p g is a valid pointer toward a game structure
  **/
 void game_restart(game g);
+
+///////////////////////// V2 /////////////////////////
+
+/**
+ * @brief Checks if the game is wrapping
+ * @return true, if the game is wrapping, false otherwise, false otherwise
+ * @pre @p g is a valid pointer toward a cgame structure
+ **/
+bool game_is_wrapping(cgame g);
+
+/**
+ * @brief Creates a new empty game having height rows and width
+ * columns. All the cells will have the default color (whose value is
+ * 0). The maximum number of moves is set to 0
+ * @param width the width of the grid
+ * @param height the height of the grid
+ * @param wrapping whether or not the game is wrapping
+ * @return the created game
+ * @pre @p width > 0
+ * @pre @p height > 0
+ **/
+game game_new_empty_ext(uint width, uint height, bool wrapping);
+
+/**
+ * @brief Creates a new game and initialize it in one call
+ * @param width the width of the grid
+ * @param height the height of the grid
+ * @param cells 1D array describing the color of each cell of the game. The storage is row by row
+ * @param wrapping whether or not the game is wrapping
+ * @return the created game
+ * @pre @p width > 0
+ * @pre @p height > 0
+ * @pre @p cells != NULL
+ * @pre @p nb_moves_max > 0
+ **/
+game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max,  bool wrapping);
+
+/**
+ * @brief Returns the number of rows on the grid
+ * @param game the game
+ * @return the height of the game
+ * @pre @p g is a valid pointer toward a cgame structure
+ **/
+uint game_height(cgame game);
+
+/**
+ * @brief Returns the number of columns on the game
+ * @param game the game
+ * @return the width of the game
+ * @pre @p g is a valid pointer toward a cgame structure
+ **/
+uint game_width(cgame game);
+
 
 #endif  // __GAME_H__
