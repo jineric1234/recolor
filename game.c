@@ -451,3 +451,65 @@ void game_restart(game g){
         g->tab[i]=g->tab_init[i];
     } 
 }
+
+/*******************************V2********************************/
+/**
+ * @brief Checks if the game is wrapping
+ * @return true, if the game is wrapping, false otherwise, false otherwise
+ * @pre @p g is a valid pointer toward a cgame structure
+ **/
+bool game_is_wrapping(cgame g){
+    return true;
+}
+
+/**
+ * @brief Creates a new empty game having height rows and width
+ * columns. All the cells will have the default color (whose value is
+ * 0). The maximum number of moves is set to 0
+ * @param width the width of the grid
+ * @param height the height of the grid
+ * @param wrapping whether or not the game is wrapping
+ * @return the created game
+ * @pre @p width > 0
+ * @pre @p height > 0
+ **/
+game game_new_empty_ext(uint width, uint height, bool wrapping){
+    return NULL;
+}
+
+/**
+ * @brief Creates a new game and initialize it in one call
+ * @param width the width of the grid
+ * @param height the height of the grid
+ * @param cells 1D array describing the color of each cell of the game. The storage is row by row
+ * @param wrapping whether or not the game is wrapping
+ * @return the created game
+ * @pre @p width > 0
+ * @pre @p height > 0
+ * @pre @p cells != NULL
+ * @pre @p nb_moves_max > 0
+ **/
+game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max,  bool wrapping){
+    return NULL;
+}
+
+/**
+ * @brief Returns the number of rows on the grid
+ * @param game the game
+ * @return the height of the game
+ * @pre @p g is a valid pointer toward a cgame structure
+ **/
+uint game_height(cgame game){
+    return 0;
+}
+
+/**
+ * @brief Returns the number of columns on the game
+ * @param game the game
+ * @return the width of the game
+ * @pre @p g is a valid pointer toward a cgame structure
+ **/
+uint game_width(cgame game){
+    return 0;
+}
+
