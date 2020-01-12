@@ -80,7 +80,7 @@ bool test_game_cell_current_color() {
   game_delete(g);
   return true;
 }
-
+ /*
 bool test_game_height() {
   uint height = rand() % 15 + 9;
   game g = game_new_empty_ext(height, 9, true);
@@ -93,6 +93,15 @@ bool test_game_height() {
     return false;
   }
   return true;
+} */
+
+bool test_game_height(){
+    game g = game_new_empty();
+    if (game_height(g) != g->height){
+        fprintf(stderr, "Error: height!\n");
+        return false;
+    }
+    return true;
 }
 
 /* ********** USAGE ********** */

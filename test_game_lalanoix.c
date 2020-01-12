@@ -6,6 +6,8 @@
 #include "game_io.h"
 #include "game.h"
 #include "game.c"
+#define WITDH 10
+#define HEIGHT 10
 /* ********** USAGE ********** */
 
 void usage(int argc, char *argv[]) {
@@ -112,14 +114,6 @@ bool test_game_delete(){
     fprintf(stderr, "ERROR! \n");
     return false;
   }
-  /*for (int x=0; x< SIZE-1;x++){
-    for (int y=0; y<SIZE-1; y++){
-      if (game_cell_current_color(g,x,y) == NULL){
-        fprintf(stderr, "Error");
-        return false;
-      }
-    }
-  } */
 
   game_delete(g);
 
@@ -127,7 +121,25 @@ bool test_game_delete(){
   return true;
 }
 
+/* ********** TEST IS WRAPPING ********** */
+bool test_iswrapping(){
+  game g = game_new_empty_ext(WITDH,HEIGHT,true);
+  if(game_is_wrapping(g)==false){
+    fprintf(stderr, "Error!\n");
+    return false;
+  }
+  return true;
+}
 
+/* ********** TEST WIDTH ********** */
+bool test_width(){
+    game g = game_new_empty();
+    if (game_width(g) != g->width){
+        fprintf(stderr, "Error: width!\n");
+        return false;
+    }
+    return true;
+}
 
 /* ********** MAIN ROUTINE ********** */
 
@@ -143,6 +155,10 @@ int main(int argc, char *argv[]) {
     ok = test_game_delete();
   else if (strcmp("isover", argv[1]) == 0)
     ok = test_game_is_over();
+  else if (strcmp("iswrapping", argv[1]) == 0)
+    ok = test_iswrapping();
+  else if (strcmp("width", argv[1]) == 0)
+    ok = test_width();
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "game_io.h"
 
+
 struct game_s {
   color *cell;       // pointe vers la grille du jeu
   color *cell_init;  // pointe vers la grille du jeu initiale
@@ -312,8 +313,12 @@ void game_restart(game g) {
 
 /*******************************V2********************************/
 
-bool game_is_wrapping(cgame g) { return true; }
-
+bool game_is_wrapping(cgame g) { 
+  if (g==NULL){
+    fprintf(stderr,"error pointer!\n");
+  }
+  return g->wrapping;
+}
 game game_new_empty_ext(uint width, uint height, bool wrapping){
    return NULL; }
 

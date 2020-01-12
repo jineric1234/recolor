@@ -27,15 +27,15 @@ add_executable(test_game_ejin test_game_ejin.c)
 add_test(test_game_set_max_moves test_game_zboumedris setmax)
 add_test(test_game_nb_moves_max test_game_zboumedris nbmovesmax)
 add_test(test_game_cell_current_color test_game_zboumedris cellcolor)
-##add_test(test_height test_game_zboumedris height)
+add_test(test_game_height test_game_zboumedris height)
 add_executable(test_game_zboumedris test_game_zboumedris.c)
 
 #Test lalanoix
 add_test(test_game_restart test_game_lalanoix restart)
 add_test(test_game_is_over test_game_lalanoix isover)
 add_test(test_game_delete test_game_lalanoix delete)
-##add_test(test_iswrapping test_game_lalanoix iswrapping)
-##add_test(test_width test_game_lalanoix width)
+add_test(test_iswrapping test_game_lalanoix iswrapping)
+add_test(test_width test_game_lalanoix width)
 add_executable(test_game_lalanoix test_game_lalanoix.c)
 
 #Test anouamani
