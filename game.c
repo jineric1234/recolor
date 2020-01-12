@@ -438,11 +438,74 @@ void game_restart(game g) {
 
 bool game_is_wrapping(cgame g) { return true; }
 
-game game_new_empty_ext(uint width, uint height, bool wrapping) { return NULL; }
+game game_new_empty_ext(uint width, uint height, bool wrapping){
+   return NULL; }
 
-game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max,
-                  bool wrapping) {
-  return NULL;
+game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool wrapping) {
+  if (nb_moves_max == 0) {
+    fprintf(stderr, "moves max egale a zero");
+    exit(EXIT_FAILURE);
+  }
+  if (cells == NULL) {
+    fprintf(stderr, "cells egale a null\n");
+    exit(EXIT_FAILURE);
+  }
+  if(width<=0 || height<=0){
+    fprintf(stderr, "width ou height inferieur ou égale a 0\n");
+    exit(EXIT_FAILURE);
+  }
+  game g = (game)malloc(sizeof(struct game_s));
+  if (g == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    exit(EXIT_FAILURE);
+  }
+  g->nbmax = nb_moves_max;
+  g->nbmovecur = 0;
+  g->width = width;
+  g->height = height;
+  g->cell = (color *)malloc(g->width * g->width * sizeof(color)); /* j'ai changé SIZE*SIZE par wdith*height*/
+  if (g->cell == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  g->cell_init = (color *)malloc(g->width * g->height * sizeof(color));
+  if (g->cell_init == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g->cell);
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  g->tab = (bool *)malloc(g->width * g->height * sizeof(bool));
+  if (g->tab == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g->cell_init);
+    free(g->cell);
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  g->tab_init = (bool *)malloc(g->width * g->height * sizeof(bool));
+  if (g == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g->cell_init);
+    free(g->cell);
+    free(g->tab);
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  for (int i = 0; i < g->width * g->height; i++) {
+    g->cell[i] = cells[i];
+    g->cell_init[i] = cells[i];
+    if (i == 0) {
+      g->tab[i] = true;
+      g->tab_init[i] = true;
+    } else {
+      g->tab[i] = false;
+      g->tab_init[i] = false;
+    }
+  }
+  /* manque bool wrapping */
+  return g;
 }
 
 uint game_height(cgame game) {
@@ -453,7 +516,7 @@ uint game_height(cgame game) {
   return game->height;
 }
 
-uint game_width(cgame game) { 
+uint game_width(cgame game) {
     if (game == NULL) {
     fprintf(stderr, "NULL pointer");
     exit(EXIT_FAILURE);
