@@ -8,7 +8,7 @@
 #include "game_io.h"
 
 
-/* ********** TEST NB MOUVES ********** */
+/* ******** TEST NB MOUVES ******** */
 bool test_nbmovescur(int k, int c){ //error game02.o
   game g = game_new_empty();
   if (g == NULL){
@@ -41,7 +41,7 @@ bool test_nbmovescur(int k, int c){ //error game02.o
   return true;
 }
 
-/* ********** TEST ONE MOUVE ********** */
+/* ******** TEST ONE MOUVE ******** */
 
 bool test_playonemouve(int k, int b){
   game g = game_new_empty();
@@ -76,7 +76,42 @@ bool test_playonemouve(int k, int b){
   return true;
 }
 
-/* ********** TEST GAME COPY ********** */
+/* ******** TEST GAME EXT ********* */
+bool test_emptyext(int h, int w){
+  game g = game_new_empty_ext(h,w,true);
+  if (g == NULL){
+    fprintf(stderr, "Error: invalid new empty ext!\n");
+    return false;
+  }
+  if (g->height!=h){
+    return false;
+  }
+  if (g->width!=w){
+    return false;
+  }
+  if (g->wrapping!= true){
+    return false;
+  }
+  for (uint i=0;  i<g->width*g->height; i++){
+    if (g->tab[i]!=0 || g->tab_init[i]!=0){
+      return false;
+    }
+    if (i==0 
+    && g->tab[i]!=true
+    && g->tab_init[i]!=true){
+      return false;
+    }
+    if (i!=0
+    && g->tab[i]!=false
+    && g->tab_init[i]!=false){
+      return false;
+    }
+  }
+  game_delete(g);
+  return true;
+}
+
+/* ******** TEST GAME COPY ******** */
 
 bool test_copy(int k){
   game g = game_new_empty();
@@ -127,9 +162,7 @@ bool test_copy(int k){
 
 }
 
-
-
-/* ********** TEST GAME MAIN ********** */
+/* ******** TEST GAME MAIN ******** */
 
 
 void usage(int argc, char *argv[]) {
@@ -147,9 +180,10 @@ int main(int argc, char *argv[]){
     ok = test_nbmovescur(20, 2);
   else if (strcmp("playonemove", argv[1]) == 0)
     ok = test_playonemouve(2, 30);
-  else if (strcmp("copy", argv[1]) == 0){
+  else if (strcmp("copy", argv[1]) == 0)
     ok=test_copy(2);
-  }
+  else if ((strcmp("emptyext", argv[1]) == 0))
+    ok=test_emptyext(5,7);
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);
@@ -164,3 +198,5 @@ int main(int argc, char *argv[]){
     return EXIT_FAILURE;
   }
 }
+
+
