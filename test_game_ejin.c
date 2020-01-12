@@ -7,7 +7,9 @@
 #include "game.c"
 #include "game.h"
 #include "game_io.h"
-
+#define nbmax 12
+#define width 11
+#define height 12
 /* ******** TEST_GAME_NEW ********* */
 bool test_game_new()
 {
@@ -120,17 +122,31 @@ color c=0;
 }
 /* **********************TEST_NEW_GAME_EXT****************/
 bool test_newext(){
-  game g = game_new_ext(g->width,g->height, g->cell, g->nbmax,g->wrapping );
+  color cell[] = {
+      0, 0, 2, 0, 2, 1, 0, 1, 0, 3, 0,
+      3, 3, 1, 1, 1, 1, 3, 2, 0, 1, 0,
+      0, 1, 2, 3, 2, 3, 2, 0, 3, 3, 2,
+      3, 1, 0, 3, 2, 1, 1, 1, 2, 2, 0,
+      1, 2, 3, 3, 3, 3, 2, 0, 1, 0, 0,
+      3, 3, 0, 1, 1, 2, 3, 3, 2, 1, 3,
+      1, 2, 2, 2, 0, 0, 1, 3, 1, 1, 2,
+      3, 1, 3, 1, 0, 1, 0, 1, 3, 3, 3,
+      3, 0, 1, 0, 0, 2, 1, 1, 1, 3, 0,
+      3, 1, 0, 0, 0, 3, 2, 3, 1, 0, 0,
+      3, 3, 1, 1, 2, 2, 3, 2, 0, 0, 2,
+      0, 2, 3, 0, 1, 1, 1, 2, 3, 0, 1};
+  game g = game_new_ext(width,height,cell,nbmax,true);
   if (g == NULL)
   {
     fprintf(stderr, "error: invalid game new !\n");
     return false;
   }
+  
   if(g->wrapping!=true && g->wrapping!=false){
     fprintf(stderr,"wrapping problem");
     return false;
   }
-  if(g->width<=0 || g->height<=0){
+  if(width<=0 || height<=0){
     fprintf(stderr, "width ou height problem");
     return false;
   }
@@ -147,9 +163,9 @@ bool test_newext(){
     game_delete(g);
     return false;
   }
-  for (unsigned int x = 0; x < g->width; x++)
+  for (unsigned int x = 0; x < width; x++)
   {
-    for (unsigned int y = 0; y < g->height; y++)
+    for (unsigned int y = 0; y < height; y++)
     {
       if (game_cell_current_color(g, x, y) < 0 || game_cell_current_color(g, x, y) > NB_COLORS)
       {
