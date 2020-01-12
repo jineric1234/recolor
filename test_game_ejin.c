@@ -118,6 +118,51 @@ color c=0;
   game_delete(g);
   return true;
 }
+/* **********************TEST_NEW_GAME_EXT****************/
+bool test_newext(){
+  game g = game_new_ext(g->width,g->height, g->cell, g->nbmax,g->wrapping );
+  if (g == NULL)
+  {
+    fprintf(stderr, "error: invalid game new !\n");
+    return false;
+  }
+  if(g->wrapping!=true && g->wrapping!=false){
+    fprintf(stderr,"wrapping problem");
+    return false;
+  }
+  if(g->width<=0 || g->height<=0){
+    fprintf(stderr, "width ou height problem");
+    return false;
+  }
+  unsigned int nb_moves_max = game_nb_moves_max(g);
+  if (nb_moves_max <= 0)
+  {
+    fprintf(stderr, "error: invalid nb_moves_max !\n ");
+    game_delete(g);
+    return false;
+  }
+  if (game_nb_moves_cur(g) != 0)
+  {
+    fprintf(stderr, "Error: invalid nb moves cur !\n");
+    game_delete(g);
+    return false;
+  }
+  for (unsigned int x = 0; x < g->width; x++)
+  {
+    for (unsigned int y = 0; y < g->height; y++)
+    {
+      if (game_cell_current_color(g, x, y) < 0 || game_cell_current_color(g, x, y) > NB_COLORS)
+      {
+        fprintf(stderr, "Error: cell color!\n");
+        game_delete(g);
+        return false;
+      }
+    }
+  }
+  game_delete(g);
+  return true;
+}
+
 
 /* ********** USAGE ********** */
 
@@ -143,6 +188,8 @@ int main(int argc, char *argv[])
     ok = test_game_new_empty();
 
   else if (strcmp("setcell", argv[1]) == 0 )
+    ok = test_game_set_cell_init();
+    else if (strcmp("newext", argv[1]) == 0 )
     ok = test_game_set_cell_init();
   else
   {
