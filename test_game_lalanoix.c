@@ -126,8 +126,10 @@ bool test_iswrapping(){
   game g = game_new_empty_ext(WITDH,HEIGHT,true);
   if(game_is_wrapping(g)==false){
     fprintf(stderr, "Error!\n");
+    game_delete(g);
     return false;
   }
+  game_delete(g);
   return true;
 }
 

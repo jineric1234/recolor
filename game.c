@@ -413,8 +413,61 @@ bool game_is_wrapping(cgame g) {
   }
   return g->wrapping;
 }
+
 game game_new_empty_ext(uint width, uint height, bool wrapping){
-   return NULL; }
+  game g = (game)malloc(sizeof(struct game_s));
+  if (g == NULL) {
+    fprintf(stderr, "errrr\n");
+    exit(EXIT_FAILURE);
+  }
+  g->nbmax = 0;
+  g->nbmovecur = 0;
+  g->cell = (color *)malloc(width * height * sizeof(color));
+  if (g->cell == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  g->cell_init = (color *)malloc(width * height * sizeof(color));
+  if (g->cell_init == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g->cell);
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  g->tab = (bool *)malloc(width * height * sizeof(bool));
+  if (g->tab == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g->cell_init);
+    free(g->cell);
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  g->tab_init = (bool *)malloc(width * height * sizeof(bool));
+  if (g == NULL) {
+    fprintf(stderr, "jeu non initialisé\n");
+    free(g->cell_init);
+    free(g->cell);
+    free(g->tab);
+    free(g);
+    exit(EXIT_FAILURE);
+  }
+  for (int i = 0; i < width * height; i++) {
+    g->cell_init[i] = 0;
+    g->cell[i] = 0;
+    if (i == 0) {
+      g->tab[i] = true;
+      g->tab_init[i] = true;
+    } else {
+      g->tab[i] = false;
+      g->tab_init[i] = false;
+    }
+  }
+  g->wrapping=wrapping;
+  return g;
+}
+
+ 
 
 game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool wrapping) {
   if (nb_moves_max == 0) {

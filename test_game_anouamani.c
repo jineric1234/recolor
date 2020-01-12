@@ -79,20 +79,22 @@ bool test_playonemouve(int k, int b){
 /* ******** TEST GAME EXT ********* */
 bool test_emptyext(int h, int w){
   game g = game_new_empty_ext(h,w,true);
-  if (g == NULL){
+  if (g == NULL
+  || g-> cell == NULL
+  || g-> cell_init == NULL
+  || g-> tab == NULL
+  || g-> tab_init == NULL){
     fprintf(stderr, "Error: invalid new empty ext!\n");
     return false;
   }
-  if (g->height!=h){
+  if (g->nbmovecur!=0
+  || g->nbmax!=0
+  || g->height!=h
+  || g->width!=w
+  || g->wrapping!= true){
     return false;
   }
-  if (g->width!=w){
-    return false;
-  }
-  if (g->wrapping!= true){
-    return false;
-  }
-  for (uint i=0;  i<g->width*g->height; i++){
+  for (uint i=0;  i<(g->width)*(g->height); i++){
     if (g->tab[i]!=0 || g->tab_init[i]!=0){
       return false;
     }
