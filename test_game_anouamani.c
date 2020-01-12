@@ -89,16 +89,19 @@ bool test_emptyext(int h, int w){
   }
   if (g->nbmovecur!=0
   || g->nbmax!=0
+  || g->height!=h
+  || g->width!=w
+  || g->wrapping!= true
   ){
     fprintf(stderr, "1\n");
     return false;
   }
   for (uint i=0;  i<(g->width)*(g->height); i++){
-    if (g->tab[i]!=0 || g->tab_init[i]!=0){
+    if (g->cell[i]!=0 || g->cell_init[i]!=0){
       fprintf(stderr, "2\n");
       return false;
     }
-    if (i==0 
+    if (i==0
     && g->tab[i]!=true
     && g->tab_init[i]!=true){
       fprintf(stderr, "3!\n");

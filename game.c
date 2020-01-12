@@ -422,6 +422,8 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
   }
   g->nbmax = 0;
   g->nbmovecur = 0;
+  g->height=height;
+  g->width=width;
   g->cell = (color *)malloc(width * height * sizeof(color));
   if (g->cell == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
