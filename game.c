@@ -12,6 +12,7 @@ struct game_s {
   uint nbmovecur;    // nombre de mouvements actuel
   bool *tab;         // deuxieme tableau pour les cases voisines
   bool *tab_init;    // copie tableau booleens
+  bool wrapping;
   unsigned int width;
   unsigned int height;
 };
@@ -188,204 +189,79 @@ uint game_nb_moves_cur(cgame g) {
   return g->nbmovecur;
 }
 
-void game_play_one_move(game g, color c) {
-  if (g == NULL) {
-    fprintf(stderr, "POINTEUR null\n");
-    exit(EXIT_FAILURE);
-  }
-  if (c < 0 || c >= NB_COLORS) {
-    fprintf(stderr, "Couleur innexistante\n");
-    exit(EXIT_FAILURE);
-  }
-  g->nbmovecur++;
-  uint valeur = game_cell_current_color(g, 0, 0);
-  for (uint x = 0; x < SIZE * SIZE; x++) {
-    if (g->tab[x] == true) {
-      if (x % SIZE == 0) {
-        if (x == 0) {
-          if (g->cell[x + 1] == valeur) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x + SIZE] == valeur) {
-            g->tab[x + SIZE] = true;
-          }
-        } else if (x == SIZE * (SIZE - 1)) {
-          if (g->cell[x + 1] == valeur) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x - SIZE] == valeur) {
-            g->tab[x - SIZE] = true;
-          }
-        } else {
-          if (g->cell[x + 1] == valeur) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x + SIZE] == valeur) {
-            g->tab[x + SIZE] = true;
-          }
-          if (g->cell[x - SIZE] == valeur) {
-            g->tab[x - SIZE] = true;
-          }
-        }
-      } else if (x % SIZE > 0 && x % SIZE < SIZE) {
-        if (x < SIZE) {
-          if (g->cell[x + 1] == valeur) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x + SIZE] == valeur) {
-            g->tab[x + SIZE] = true;
-          }
-          if (g->cell[x - 1] == valeur) {
-            g->tab[x - 1] = true;
-          }
-        } else if (x >= SIZE * (SIZE - 1)) {
-          if (g->cell[x + 1] == valeur) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x - SIZE] == valeur) {
-            g->tab[x - SIZE] = true;
-          }
-          if (g->cell[x - 1] == valeur) {
-            g->tab[x - 1] = true;
-          }
-        } else {
-          if (g->cell[x + 1] == valeur) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x - SIZE] == valeur) {
-            g->tab[x - SIZE] = true;
-          }
-          if (g->cell[x - 1] == valeur) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x + SIZE] == valeur) {
-            g->tab[x + SIZE] = true;
-          }
-        }
-      } else {
-        if (x == SIZE - 1) {
-          if (g->cell[x - 1] == valeur) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x + SIZE] == valeur) {
-            g->tab[x + SIZE] = true;
-          }
-        } else if (x == SIZE * SIZE - 1) {
-          if (g->cell[x - 1] == valeur) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x - SIZE] == valeur) {
-            g->tab[x - SIZE] = true;
-          }
-        } else {
-          if (g->cell[x - 1] == valeur) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x + SIZE] == valeur) {
-            g->tab[x + SIZE] = true;
-          }
-          if (g->cell[x - SIZE] == valeur) {
-            g->tab[x - SIZE] = true;
-          }
-        }
-      }
-      g->cell[x] = c;
+bool estValide(int x, int y){
+    if (x<0 || x>=SIZE || y<0 || y>=SIZE){
+        return false;
+    }else{
+        return true;
     }
-  }
+}
 
-  for (uint x = (SIZE * SIZE) - 1; x > 0; x--) {
-    if (g->tab[x] == true) {
-      if (x % SIZE == 0) {
-        if (x == 0) {
-          if (g->cell[x + 1] == c) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x + SIZE] == c) {
-            g->tab[x + SIZE] = true;
-          }
-        } else if (x == SIZE * (SIZE - 1)) {
-          if (g->cell[x + 1] == c) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x - SIZE] == c) {
-            g->tab[x - SIZE] = true;
-          }
-        } else {
-          if (g->cell[x + 1] == c) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x + SIZE] == c) {
-            g->tab[x + SIZE] = true;
-          }
-          if (g->cell[x - SIZE] == c) {
-            g->tab[x - SIZE] = true;
-          }
-        }
-      } else if (x % SIZE > 0 && x % SIZE < SIZE) {
-        if (x < SIZE) {
-          if (g->cell[x + 1] == c) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x + SIZE] == c) {
-            g->tab[x + SIZE] = true;
-          }
-          if (g->cell[x - 1] == c) {
-            g->tab[x - 1] = true;
-          }
-        } else if (x >= SIZE * (SIZE - 1)) {
-          if (g->cell[x + 1] == c) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x - SIZE] == c) {
-            g->tab[x - SIZE] = true;
-          }
-          if (g->cell[x - 1] == c) {
-            g->tab[x - 1] = true;
-          }
-        } else {
-          if (g->cell[x + 1] == c) {
-            g->tab[x + 1] = true;
-          }
-          if (g->cell[x - SIZE] == c) {
-            g->tab[x - SIZE] = true;
-          }
-          if (g->cell[x - 1] == c) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x + SIZE] == c) {
-            g->tab[x + SIZE] = true;
-          }
-        }
-      } else {
-        if (x == SIZE - 1) {
-          if (g->cell[x - 1] == c) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x + SIZE] == c) {
-            g->tab[x + SIZE] = true;
-          }
-        } else if (x == SIZE * SIZE - 1) {
-          if (g->cell[x - 1] == c) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x - SIZE] == c) {
-            g->tab[x - SIZE] = true;
-          }
-        } else {
-          if (g->cell[x - 1] == c) {
-            g->tab[x - 1] = true;
-          }
-          if (g->cell[x + SIZE] == c) {
-            g->tab[x + SIZE] = true;
-          }
-          if (g->cell[x - SIZE] == c) {
-            g->tab[x - SIZE] = true;
-          }
-        }
-      }
-      g->cell[x] = c;
+void game_play_one_move(game g, color v){
+    if (g==NULL){
+        fprintf(stderr, "POINTEUR null\n");
+        exit(EXIT_FAILURE);
     }
-  }
+    if (v<0 || v>=NB_COLORS){
+        fprintf(stderr, "Couleur innexistante\n");
+        exit(EXIT_FAILURE);
+    }
+    g->nbmovecur++;
+    color c = game_cell_current_color(g, 0, 0);
+    for (uint i=0; i<SIZE*SIZE; i++){
+        int x = i/SIZE;
+        int y = i%SIZE;
+        if (g->tab[i]==true){
+            if (estValide(x ,y+1)){
+                if (game_cell_current_color(g, x, y+1)==c){
+                    g->tab[x*SIZE+y+1]=true;
+                }
+            }
+            if (estValide(x,y-1)){
+                if (game_cell_current_color(g, x, y-1)==c){
+                    g->tab[x*SIZE+y-1]=true;
+                }
+            }
+            if (estValide(x-1,y)){
+                if (game_cell_current_color(g, x-1, y)==c){
+                    g->tab[(x-1)*SIZE+y]=true;
+                }
+            }
+            if (estValide(x+1 ,y)){
+                if (game_cell_current_color(g, x+1, y)==c){
+                    g->tab[(x+1)*SIZE+y]=true;
+                }
+            }
+            g->cell[i]=v;
+        }
+    }
+    for (uint i=(SIZE*SIZE)-1; i>0; i--){
+        uint x = i/SIZE;
+        uint y = i%SIZE;
+        if (g->tab[i]==true){
+            if (estValide(x ,y+1)){
+                if (game_cell_current_color(g, x, y+1)==c){
+                    g->tab[x*SIZE+y+1]=true;
+                }
+            }
+            if (estValide(x ,y-1)){
+                if (game_cell_current_color(g, x, y-1)==c){
+                    g->tab[x*SIZE+y-1]=true;
+                }
+            }
+            if (estValide(x-1,y)){
+                if (game_cell_current_color(g, x-1, y)==c){
+                    g->tab[(x-1)*SIZE+y]=true;
+                }
+            }
+            if (estValide(x+1 ,y)){
+                if (game_cell_current_color(g, x+1, y)==c){
+                    g->tab[(x+1)*SIZE+y]=true;
+                }
+            }
+            g->cell[i]=v;
+        }
+    }
 }
 
 void game_delete(game g) {
@@ -504,7 +380,8 @@ game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool
       g->tab_init[i] = false;
     }
   }
-  /* manque bool wrapping */
+  g->wrapping=wrapping;
+  
   return g;
 }
 
