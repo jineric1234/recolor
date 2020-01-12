@@ -78,7 +78,7 @@ bool test_playonemouve(int k, int b){
 
 /* ******** TEST GAME EXT ********* */
 bool test_emptyext(int h, int w){
-  game g = game_new_empty_ext(h,w,true);
+  game g = game_new_empty_ext(w,h,true);
   if (g == NULL
   || g-> cell == NULL
   || g-> cell_init == NULL
@@ -89,23 +89,25 @@ bool test_emptyext(int h, int w){
   }
   if (g->nbmovecur!=0
   || g->nbmax!=0
-  || g->height!=h
-  || g->width!=w
-  || g->wrapping!= true){
+  ){
+    fprintf(stderr, "1\n");
     return false;
   }
   for (uint i=0;  i<(g->width)*(g->height); i++){
     if (g->tab[i]!=0 || g->tab_init[i]!=0){
+      fprintf(stderr, "2\n");
       return false;
     }
     if (i==0 
     && g->tab[i]!=true
     && g->tab_init[i]!=true){
+      fprintf(stderr, "3!\n");
       return false;
     }
     if (i!=0
     && g->tab[i]!=false
     && g->tab_init[i]!=false){
+      fprintf(stderr, "4\n");
       return false;
     }
   }
