@@ -51,7 +51,7 @@ bool test_playonemouve(int k, int b){
   }
 
   unsigned int c = game_cell_current_color(g, 0, 0);
-  if (c<0 && c>3){
+  if (c<0 && c>=NB_COLORS){
     fprintf(stderr, "Error: color< 0 or color > 3!\n");
     game_delete(g);
     return false;
@@ -127,14 +127,14 @@ bool test_copy(int k){
     return false;
   }
 
+  //test si la copy est identique a l'original
   game c = game_copy(g);
   if (c == NULL){
     fprintf(stderr, "Error: invalid copy of recolor init!\n");
     return false;
   }
-
-  for (unsigned int x= 0; x<SIZE; x++){
-    for (unsigned int y= 0; y<SIZE; y++){
+  for (unsigned int x = 0; x<(g->height); x++){
+    for (unsigned int y = 0; y<(g->height); y++){
       if (game_cell_current_color(g, x, y)!= game_cell_current_color(c, x, y)){
         fprintf(stderr, "Error: la copie n'est pas identique!\n");
         game_delete(g);
@@ -143,7 +143,9 @@ bool test_copy(int k){
       }
     }
   }
+  game_delete(c);
 
+  //test copy apres des mouvements effectués
   game_play_one_move(g, k);
   game v = game_copy(g);
 
@@ -152,25 +154,17 @@ bool test_copy(int k){
       if (game_cell_current_color(g, x, y)!= game_cell_current_color(v, x, y)){
         fprintf(stderr, "Error: la copie n.2 n'est pas identique!\n");
         game_delete(g);
-        game_delete(c);
         return false;
       }
     }
   }
 
   game_delete(g);
-  game_delete(c);
-  if (game_copy(g)==NULL){
-    fprintf(stderr, "Error: impossible copy!\n");
-    return false;
-  }
-  game_delete(v);
   return true;
 
 }
 
 /* ******** TEST GAME MAIN ******** */
-
 
 void usage(int argc, char *argv[]) {
   fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
