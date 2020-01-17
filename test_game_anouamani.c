@@ -8,7 +8,7 @@
 #include "game_io.h"
 
 
-/* ******** TEST NB MOUVES ******** */
+/* ******** TEST NB MOVES ******** */
 bool test_nbmovescur(int k, int c){ //error game02.o
   game g = game_new_empty();
   if (g == NULL){
@@ -41,7 +41,7 @@ bool test_nbmovescur(int k, int c){ //error game02.o
   return true;
 }
 
-/* ******** TEST ONE MOUVE ******** */
+/* ******** TEST ONE MOVE ******** */
 
 bool test_playonemouve(int k, int b){
   game g = game_new_empty();
@@ -94,23 +94,52 @@ bool test_emptyext(int h, int w){
   || g->wrapping!= true
   ){
     fprintf(stderr, "1\n");
+    game_delete(g);
     return false;
   }
+  if(game_height(g) != g->height || game_width(g) != g->width || game_height(g) <= 0 || game_width(g) <=0){
+    fprintf(stderr, "1.2\n");
+    game_delete(g);
+    return false;
+  } 
+  if(game_is_wrapping(g)!=true){
+    fprintf(stderr, "1.3\n");
+    game_delete(g);
+    return false;
+  }
+  if(game_nb_moves_max(g) != 0 || game_nb_moves_cur(g) != 0){
+    fprintf(stderr, "1.4\n");
+    game_delete(g);
+    return false;
+  }
+
+  for (uint i=0;  i<(g->width)*(g->height); i++){
+    if (game_cell_current_color(g, i/(g->width), i%(g->width) !=0 )){
+      fprintf(stderr, "2.1\n");
+      game_delete(g);
+      return false;
+    }
+  }
+
+
   for (uint i=0;  i<(g->width)*(g->height); i++){
     if (g->cell[i]!=0 || g->cell_init[i]!=0){
       fprintf(stderr, "2\n");
+      game_delete(g);
       return false;
     }
     if (i==0
     && g->tab[i]!=true
     && g->tab_init[i]!=true){
       fprintf(stderr, "3!\n");
+      game_delete(g);
       return false;
     }
     if (i!=0
     && g->tab[i]!=false
     && g->tab_init[i]!=false){
       fprintf(stderr, "4\n");
+      game_delete(g);
       return false;
     }
   }
