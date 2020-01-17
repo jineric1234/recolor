@@ -9,33 +9,26 @@
 
 
 game game_default(){
-    
-    color cell[]= {
- 0,0,0,2,0,2,1,0,1,0,3,0,
- 0,3,3,1,1,1,1,3,2,0,1,0,
- 1,0,1,2,3,2,3,2,0,3,3,2,
- 2,3,1,0,3,2,1,1,1,2,2,0,
- 2,1,2,3,3,3,3,2,0,1,0,0,
- 0,3,3,0,1,1,2,3,3,2,1,3,
- 1,1,2,2,2,0,0,1,3,1,1,2,
- 1,3,1,3,1,0,1,0,1,3,3,3,
- 0,3,0,1,0,0,2,1,1,1,3,0,
- 1,3,1,0,0,0,3,2,3,1,0,0,
- 1,3,3,1,1,2,2,3,2,0,0,2,      
- 2,0,2,3,0,1,1,1,2,3,0,1,
-    };
-    game dgame = game_new(cell, SIZE);
-    return dgame;
+    color cell[] = 
+    {3,0,3,2,
+    0,2,1,3,
+    2,3,1,2,
+    3,2,1,0};;
+game dgame = game_new_ext(4, 4, cell, 1, true);
+return dgame;
 }
 
 void game_display(game g){
     int nb_joues = game_nb_moves_cur(g);
     int nb_max = game_nb_moves_max(g);
+    uint height = game_height(g);
+    uint width = game_width(g);
 
     printf("nb de coups joués : %d ; nb de coups max : %d \n", nb_joues, nb_max);
-    for (int x= 0; x < SIZE; x++){
-        for(int y= 0; y < SIZE; y++){
-            printf("%d",game_cell_current_color(g, x, y));
+    for (int x= 0; x < height; x++){
+        for(int y= 0; y < width; y++){
+            int v = game_cell_current_color(g, x, y);
+            printf("%d",v);
         }
         printf("\n");
     }
@@ -70,8 +63,6 @@ int main(void){
             game_delete(g);
             return EXIT_SUCCESS;
         }
-
-
     }
     if(game_nb_moves_cur(g)<=game_nb_moves_max(g)){
         printf("BRAVO\n");

@@ -141,19 +141,27 @@ bool test_newext(){
     fprintf(stderr, "error: invalid game new !\n");
     return false;
   }
+
   
   if(g->wrapping!=true && g->wrapping!=false){
     fprintf(stderr,"wrapping problem");
+    game_delete(g);
     return false;
   }
-  if(width<=0 || height<=0){
+  if(game_width(g)<=0 || game_height(g)<=0){
     fprintf(stderr, "width ou height problem");
+    game_delete(g);
     return false;
   }
   unsigned int nb_moves_max = game_nb_moves_max(g);
   if (nb_moves_max <= 0)
   {
     fprintf(stderr, "error: invalid nb_moves_max !\n ");
+    game_delete(g);
+    return false;
+  }
+  if(game_nb_moves_max(g) > 12){
+    fprintf(stderr, "Error: invalid nb moves max !\n");
     game_delete(g);
     return false;
   }
