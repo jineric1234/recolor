@@ -75,6 +75,8 @@ game game_new(color *cells, uint nb_moves_max) {
       g->tab_init[i] = false;
     }
   }
+  g->height=SIZE;
+  g->width=SIZE;
   return g;
 }
 
@@ -127,6 +129,8 @@ game game_new_empty() {
       g->tab_init[i] = false;
     }
   }
+  g->width=SIZE;
+  g->height=SIZE;
   return g;
 }
 

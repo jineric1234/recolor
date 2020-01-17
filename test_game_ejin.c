@@ -45,9 +45,9 @@ bool test_game_new()
     game_delete(g);
     return false;
   }
-  for (unsigned int x = 0; x < 12; x++)
+  for (unsigned int x = 0; x < SIZE; x++)
   {
-    for (unsigned int y = 0; y < 12; y++)
+    for (unsigned int y = 0; y < SIZE; y++)
     {
       if (game_cell_current_color(g, x, y) < 0 || game_cell_current_color(g, x, y) > 3)
       {
