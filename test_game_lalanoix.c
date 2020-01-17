@@ -41,18 +41,26 @@ bool test_game_restart(){
 
   if(game_nb_moves_cur(g)!=0){
     fprintf(stderr, "Error:nb moves cur\n");
+    game_delete(g);
     return false;
   }
 
-  for (int x=0; x< SIZE;x++){
-    for (int y=0; y<SIZE; y++){
-      unsigned int cellc =game_cell_current_color(g,x,y);
-      if(cellc<0 || cellc>3){
-        fprintf(stderr, "Error: cell problem\n");
-
-        return false;
-      }
+  uint height= g->height;
+  uint width = g->width;
+  game_restart(g);
+  for (uint x=0; x < (height*width); x++){
+    if (g->tab[x] != g->tab_init[x]
+    || g->cell[x] != g->cell_init[x]){
+      fprintf(stderr, "Error:defaut restart\n");
+      game_delete(g);
+      return false;
     }
+  }
+  if (g->nbmax!=SIZE
+  || g->nbmovecur!=0){
+    fprintf(stderr, "Error:defaut nbmax ou nbcur\n");
+    game_delete(g);
+    return false;
   }
 
   game_delete(g);
@@ -61,8 +69,6 @@ bool test_game_restart(){
 /* ********** TEST IS OVER ********** */
 
 bool test_game_is_over(){
-  
-
   color cell[]= {
       0,0,0,2,0,2,1,0,1,0,3,0,
       0,3,3,1,1,1,1,3,2,0,1,0,
@@ -85,7 +91,6 @@ bool test_game_is_over(){
     return false;
   }
 
-
   if(game_nb_moves_cur(g)>game_nb_moves_max(g)){
     fprintf(stderr, "Error!\n");
     return false;
@@ -97,7 +102,8 @@ bool test_game_is_over(){
   }
 
   if(!game_is_over(g)){
-    fprintf(stderr, "Error 404!\n");
+    fprintf(stderr, "Error game fini!\n");
+    game_delete(g);
     return false;
     
   }
@@ -108,40 +114,52 @@ bool test_game_is_over(){
 /* ********** TEST DELETE ********** */
 
 bool test_game_delete(){
-
   game g= game_new_empty();
   if(g==NULL){
     fprintf(stderr, "ERROR! \n");
     return false;
   }
-
-  game_delete(g);
-
-
+  game_delete(g); 
   return true;
 }
 
 /* ********** TEST IS WRAPPING ********** */
 bool test_iswrapping(){
   game g = game_new_empty_ext(WITDH,HEIGHT,true);
-  if(game_is_wrapping(g)==false){
-    fprintf(stderr, "Error!\n");
+  if(game_is_wrapping(g)!=true){
+    fprintf(stderr, "Error wrapping!\n");
+    game_delete(g);
+    return false;
+  }
+  game_delete(g);
+  
+  game v = game_new_empty_ext(WITDH,HEIGHT,false);
+  if(game_is_wrapping(v)!=false){
+    fprintf(stderr, "Error wrapping!\n");
+    game_delete(v);
+    return false;
+  }
+  
+  game_delete(v);
+  return true;
+}
+
+/* ********** TEST WIDTH ********** */
+
+bool test_width(uint width) {
+  game g = game_new_empty_ext(width, 10, true);
+  if (g == NULL) {
+    fprintf(stderr, "Error: game not found!\n");
+    return false;
+  }
+  if (g->width != width){
+    fprintf(stderr, "Error: modified height!\n");
     game_delete(g);
     return false;
   }
   game_delete(g);
   return true;
-}
-
-/* ********** TEST WIDTH ********** */
-bool test_width(){
-    game g = game_new_empty();
-    if (game_width(g) != g->width){
-        fprintf(stderr, "Error: width!\n");
-        return false;
-    }
-    return true;
-}
+} 
 
 /* ********** MAIN ROUTINE ********** */
 
@@ -160,7 +178,7 @@ int main(int argc, char *argv[]) {
   else if (strcmp("iswrapping", argv[1]) == 0)
     ok = test_iswrapping();
   else if (strcmp("width", argv[1]) == 0)
-    ok = test_width();
+    ok = test_width(7);
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);

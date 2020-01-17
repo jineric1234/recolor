@@ -45,64 +45,57 @@ bool test_game_nb_moves_max() {
 }
 
 bool test_game_cell_current_color() {
-  game dgame = game_new_empty();
-  color cell[] = {0, 0, 0, 2, 0, 2, 1, 0, 1, 0, 3, 0, 0, 3, 3, 1, 1, 1, 1, 3, 2,
-                  0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 0, 3, 3, 2, 2, 3, 1, 0, 3, 2,
-                  1, 1, 1, 2, 2, 0, 2, 1, 2, 3, 3, 3, 3, 2, 0, 1, 0, 0, 0, 3, 3,
-                  0, 1, 1, 2, 3, 3, 2, 1, 3, 1, 1, 2, 2, 2, 0, 0, 1, 3, 1, 1, 2,
-                  1, 3, 1, 3, 1, 0, 1, 0, 1, 3, 3, 3, 0, 3, 0, 1, 0, 0, 2, 1, 1,
-                  1, 3, 0, 1, 3, 1, 0, 0, 0, 3, 2, 3, 1, 0, 0, 1, 3, 3, 1, 1, 2,
-                  2, 3, 2, 0, 0, 2, 2, 0, 2, 3, 0, 1, 1, 1, 2, 3, 0, 1};
-  int i = 0;
-  for (int x = 0; x < SIZE; x++) {
-    for (int y = 0; y < SIZE; y++) {
-      game_set_cell_init(dgame, x, y, *(cell + i));
-      i = i + 1;
+   
+  color cell[] = {
+    0,0,0,2,0,2,1,0,1,0,3,0,
+    0,3,3,1,1,1,1,3,2,0,1,0,
+    1,0,1,2,3,2,3,2,0,3,3,2,
+    2,3,1,0,3,2,1,1,1,2,2,0,
+    2,1,2,3,3,3,3,2,0,1,0,0,
+    0,3,3,0,1,1,2,3,3,2,1,3,
+    1,1,2,2,2,0,0,1,3,1,1,2,
+    1,3,1,3,1,0,1,0,1,3,3,3,
+    0,3,0,1,0,0,2,1,1,1,3,0,
+    1,3,1,0,0,0,3,2,3,1,0,0,
+    1,3,3,1,1,2,2,3,2,0,0,2,      
+    2,0,2,3,0,1,1,1,2,3,0,1,
+    };
+  game dgame = game_new(cell, SIZE);
+  if (dgame==NULL){
+    fprintf(stderr, "Error: game not found!\n");
+    return false;
+  }
+  uint height = dgame->height;
+  uint width = dgame->width;
+
+  for (uint x = 0; x < (height*width); x++) {
+    unsigned int c = game_cell_current_color(dgame, x/width, x%width);
+    if (c < 0 || c >= NB_COLORS) {
+      fprintf(stderr, "Error: color out limit!\n");
+      game_delete(dgame);
+      return false;
     }
   }
-  return dgame;
-  game g = game_new_empty();
+  game_delete(dgame);
+  return true;
+}
+
+bool test_game_height(uint height) {
+  game g = game_new_empty_ext(9, height, true);
   if (g == NULL) {
     fprintf(stderr, "Error: game not found!\n");
     return false;
   }
-
-  for (uint y = 0; y < SIZE; y++) {
-    for (uint x = 0; x < SIZE; x++) {
-      unsigned int c = game_cell_current_color(g, x, y);
-      if (c < 0 || c > 3) {
-        fprintf(stderr, "Error: game not found!\n");
-        game_delete(g);
-        return false;
-      }
-    }
+  if (g->height != height){
+    fprintf(stderr, "Error: modified height!\n");
+    game_delete(g);
+    return false;
   }
   game_delete(g);
   return true;
-}
- /*
-bool test_game_height() {
-  uint height = rand() % 15 + 9;
-  game g = game_new_empty_ext(height, 9, true);
-  if (g == NULL) {
-    fprintf(stderr, "Error: game not found!\n");
-    return false;
-  }
-  uint k = game_height(g);
-  if (k != height) {
-    return false;
-  }
-  return true;
-} */
+} 
 
-bool test_game_height(){
-    game g = game_new_empty();
-    if (game_height(g) != g->height){
-        fprintf(stderr, "Error: height!\n");
-        return false;
-    }
-    return true;
-}
+
 
 /* ********** USAGE ********** */
 
@@ -126,7 +119,7 @@ int main(int argc, char *argv[]) {
   else if (strcmp("cellcolor", argv[1]) == 0)
     ok = test_game_cell_current_color();
   else if (strcmp("height", argv[1]) == 0)
-    ok = test_game_height();
+    ok = test_game_height(14);
   else {
     fprintf(stderr,
             "Errorote: previous declaration of ‘game_delete’ was here: test "
