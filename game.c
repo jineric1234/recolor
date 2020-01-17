@@ -158,11 +158,15 @@ uint game_nb_moves_max(cgame g) {
 }
 
 color game_cell_current_color(cgame g, uint x, uint y) {
-  if (g == NULL || x >= SIZE || y >= SIZE) {
+  if (g == NULL) {
     fprintf(stderr, "mauvais données pour game_cell_current_color \n");
     exit(EXIT_FAILURE);
   }
-  return g->cell[(x * SIZE) + y];
+  if ( x >= (g->height) || y >= (g->width)) {
+    fprintf(stderr, "mauvais données pour  height game_cell_current_color \n");
+    exit(EXIT_FAILURE);
+  }
+  return g->cell[(x * (g->width)) + y];
 }
 
 game game_copy(cgame g) {
@@ -190,8 +194,8 @@ uint game_nb_moves_cur(cgame g) {
   return g->nbmovecur;
 }
 
-bool estValide(int x, int y){
-    if (x<0 || x>=SIZE || y<0 || y>=SIZE){
+bool estValide(game g, int x, int y){
+    if (x<0 || x>=(g->height) || y<0 || y>=(g->width)){
       return false;
     }else{
       return true;
@@ -208,65 +212,65 @@ void game_play_one_move(game g, color v){
       exit(EXIT_FAILURE);
   }
   g->nbmovecur++;
-  int height = g->height;
-  int width = g->width;
+  int height = g->height; //evite de reecrire g->height
+  int width = g->width; //evite de reecrire g->width
   color c = game_cell_current_color(g, 0, 0);
-  for (uint i=0; i<SIZE*SIZE; i++){
-    int x = i/SIZE;
-    int y = i%SIZE;
+  for (uint i=0; i<(height*width); i++){
+    int x = i/width;
+    int y = i%width;
     if (g->tab[i]==true){
       if (g->wrapping==false){ //wrapping false jeu normal
-        if (estValide(x ,y+1)){
+        if (estValide(g, x ,y+1)){//case droite
             if (game_cell_current_color(g, x, y+1)==c){
-                g->tab[x*SIZE+y+1]=true;
+                g->tab[x*width+y+1]=true;
             }
         }
-        if (estValide(x,y-1)){
+        if (estValide(g, x,y-1)){//case gauche
             if (game_cell_current_color(g, x, y-1)==c){
-                g->tab[x*SIZE+y-1]=true;
+                g->tab[x*width+y-1]=true;
             }
         }
-        if (estValide(x-1,y)){
+        if (estValide(g, x-1,y)){//case superieure
             if (game_cell_current_color(g, x-1, y)==c){
-                g->tab[(x-1)*SIZE+y]=true;
+                g->tab[(x-1)*width+y]=true;
             }
         }
-        if (estValide(x+1 ,y)){
+        if (estValide(g, x+1 ,y)){//case inferieure
             if (game_cell_current_color(g, x+1, y)==c){
-                g->tab[(x+1)*SIZE+y]=true;
+                g->tab[(x+1)*width+y]=true;
             }
         }
         g->cell[i]=v;
       }
-      else{ //wrapping true chang regles
-        if (y<(width-1)){ //case de droite
+      else{ //wrapping true changement regles
+        if (y==(width-1)){ //case de droite
           if (game_cell_current_color(g, x, 0)==c){
-            g->tab[x*height]=true;
+            g->tab[x*width]=true;
           }
         }
-        else{
-          if (game_cell_current_color(g, x, y)==c){
-            g->tab[x*height+y+1]=true;
+        if (y<(width-1)){
+          if (game_cell_current_color(g, x, y+1)==c){
+            g->tab[x*width+y+1]=true;
           }
         }
         if (y==0){ //case de gauche
           if (game_cell_current_color(g, x, (width-1))==c){
-              g->tab[x*height+(width-1)]=true;
+              g->tab[x*width+(width-1)]=true;
           }
         }
-        else{
+        if (y!=0){
           if (game_cell_current_color(g, x, y-1)==c){
-              g->tab[x*height+y-1]=true;
+              g->tab[x*width+y-1]=true;
           }
         }
         if (x==0){ //case haut
           if (game_cell_current_color(g, (height-1), y)==c){
-            g->tab[(height-1)*(height-1)+y]=true;
+            g->tab[((height-1)*width)+y]=true;
           }
         }
-        else{
+        if (x!=0){
           if (game_cell_current_color(g, x-1, y)==c){
-            g->tab[(x-1)*height+y]=true;
+            g->tab[(x-1)*width+y]=true;
           }
         }
         if (x==(height-1)){ // case en bas
@@ -274,61 +278,61 @@ void game_play_one_move(game g, color v){
               g->tab[y]=true;
           }
         }
-        else{
+        if (x!=(height-1)){
           if (game_cell_current_color(g, x+1, y)==c){
-              g->tab[(x+1)*height+y]=true;
+              g->tab[(x+1)*width+y]=true;
           }
         }
         g->cell[i]=v;
       }
     }
   }
-  for (uint i=(SIZE*SIZE)-1; i>0; i--){
-    uint x = i/SIZE;
-    uint y = i%SIZE;
+  for (uint i=(width*height)-1; i>0; i--){
+    int x = i/width;
+    int y = i%width;
     if (g->tab[i]==true){
       if (g->wrapping==false){ //wrapping false jeu normal
-        if (estValide(x ,y+1)){
+        if (estValide(g, x ,y+1)){//case droite
             if (game_cell_current_color(g, x, y+1)==c){
-                g->tab[x*SIZE+y+1]=true;
+                g->tab[x*width+y+1]=true;
             }
         }
-        if (estValide(x,y-1)){
+        if (estValide(g, x,y-1)){//case gauche
             if (game_cell_current_color(g, x, y-1)==c){
-                g->tab[x*SIZE+y-1]=true;
+                g->tab[x*width+y-1]=true;
             }
         }
-        if (estValide(x-1,y)){
+        if (estValide(g, x-1,y)){//case superieure
             if (game_cell_current_color(g, x-1, y)==c){
-                g->tab[(x-1)*SIZE+y]=true;
+                g->tab[(x-1)*width+y]=true;
             }
         }
-        if (estValide(x+1 ,y)){
+        if (estValide(g, x+1 ,y)){//case inferieure
             if (game_cell_current_color(g, x+1, y)==c){
-                g->tab[(x+1)*SIZE+y]=true;
+                g->tab[(x+1)*width+y]=true;
             }
         }
         g->cell[i]=v;
       }
-      else{ //wrapping true chang regles
-        if (y<(width-1)){ //case de droite
+      else{ //wrapping true changement regles
+        if (y==(width-1)){ //case de droite
           if (game_cell_current_color(g, x, 0)==c){
-            g->tab[x*height]=true;
+            g->tab[x*width]=true;
           }
         }
-        else{
+        if (y<(width-1)){
           if (game_cell_current_color(g, x, y)==c){
-            g->tab[x*height+y+1]=true;
+            g->tab[x*width+y+1]=true;
           }
         }
         if (y==0){ //case de gauche
           if (game_cell_current_color(g, x, (width-1))==c){
-              g->tab[x*height+(width-1)]=true;
+              g->tab[x*width+(width-1)]=true;
           }
         }
-        else{
+        if (y!=0){
           if (game_cell_current_color(g, x, y-1)==c){
-              g->tab[x*height+y-1]=true;
+              g->tab[x*width+y-1]=true;
           }
         }
         if (x==0){ //case haut
@@ -336,9 +340,9 @@ void game_play_one_move(game g, color v){
             g->tab[(height-1)*(height-1)+y]=true;
           }
         }
-        else{
+        if (x!=0){
           if (game_cell_current_color(g, x-1, y)==c){
-            g->tab[(x-1)*height+y]=true;
+            g->tab[(x-1)*width+y]=true;
           }
         }
         if (x==(height-1)){ // case en bas
@@ -346,9 +350,9 @@ void game_play_one_move(game g, color v){
               g->tab[y]=true;
           }
         }
-        else{
+        if (x!=(height-1)){
           if (game_cell_current_color(g, x+1, y)==c){
-              g->tab[(x+1)*height+y]=true;
+              g->tab[(x+1)*width+y]=true;
           }
         }
         g->cell[i]=v;
@@ -356,8 +360,6 @@ void game_play_one_move(game g, color v){
     }
   }
 }
-
-
 
 void game_delete(game g) {
   if (g == NULL) {
@@ -380,7 +382,7 @@ bool game_is_over(cgame g) {
     return false;
   }
   uint x = g->cell[0];
-  for (int i = 1; i < SIZE * SIZE; i++) {
+  for (int i = 1; i < (g->height) * (g->width); i++) {
     if (g->cell[i] != x) {
       return false;
     }
@@ -399,7 +401,7 @@ void game_restart(game g) {
     fprintf(stderr, "erruer structure   \n");
     exit(EXIT_FAILURE);
   }
-  for (int i = 0; i < SIZE * SIZE; i++) {
+  for (int i = 0; i < (g->height) * (g->width); i++) {
     g->cell[i] = g->cell_init[i];
     g->tab[i] = g->tab_init[i];
   }
@@ -467,13 +469,11 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
   }
   g->wrapping=wrapping;
   return g;
-}
-
- 
+} 
 
 game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool wrapping) {
   if (nb_moves_max == 0) {
-    fprintf(stderr, "moves max egale a zero");
+    fprintf(stderr, "moves max egale a zero\n");
     exit(EXIT_FAILURE);
   }
   if (cells == NULL) {
@@ -484,7 +484,7 @@ game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool
     fprintf(stderr, "width ou height inferieur ou égale a 0\n");
     exit(EXIT_FAILURE);
   }
-  game g = (game)malloc(sizeof(struct game_s));
+  game g =  malloc(sizeof(struct game_s));
   if (g == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
     exit(EXIT_FAILURE);
@@ -493,20 +493,20 @@ game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool
   g->nbmovecur = 0;
   g->width = width;
   g->height = height;
-  g->cell = (color *)malloc(g->width * g->width * sizeof(color)); /* j'ai changé SIZE*SIZE par wdith*height*/
+  g->cell = malloc(g->width * g->width * sizeof(color)); /* j'ai changé SIZE*SIZE par wdith*height*/
   if (g->cell == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
     free(g);
     exit(EXIT_FAILURE);
   }
-  g->cell_init = (color *)malloc(g->width * g->height * sizeof(color));
+  g->cell_init = malloc(g->width * g->height * sizeof(color));
   if (g->cell_init == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
     free(g->cell);
     free(g);
     exit(EXIT_FAILURE);
   }
-  g->tab = (bool *)malloc(g->width * g->height * sizeof(bool));
+  g->tab = malloc(g->width * g->height * sizeof(bool));
   if (g->tab == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
     free(g->cell_init);
@@ -514,7 +514,7 @@ game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool
     free(g);
     exit(EXIT_FAILURE);
   }
-  g->tab_init = (bool *)malloc(g->width * g->height * sizeof(bool));
+  g->tab_init = malloc(g->width * g->height * sizeof(bool));
   if (g == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
     free(g->cell_init);
@@ -553,5 +553,4 @@ uint game_width(cgame game) {
     exit(EXIT_FAILURE);
   }
   return game->width;
-
- }
+}
