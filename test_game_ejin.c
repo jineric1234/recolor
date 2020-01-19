@@ -32,18 +32,16 @@ bool test_game_new(){
     return false;
   }
 
-  if (game_nb_moves_max(g) != SIZE
-  ||game_nb_moves_cur(g) != 0){
+  if (g->nbmax != SIZE
+  ||g->nbmovecur != 0){
     fprintf(stderr, "Error: invalid nb_moves_max !\n ");
     game_delete(g);
     return false;
   }
-  if (g->wrapping != false){
-    fprintf(stderr, "Error: invalid wrapping !\n");
-    game_delete(g);
-    return false;
-  }
+
   if (g->height != SIZE
+  || g->height <=0
+  || g->width <=0
   || g->width != SIZE){
     fprintf(stderr, "Error: invalid nb moves cur !\n");
     game_delete(g);
@@ -51,12 +49,12 @@ bool test_game_new(){
   }
   
   for (uint i=0; i<(g->height*g->width)-1; i++){
-    uint v = sizeof(g->cell[i]);
-    uint w = sizeof(g->cell[i+1]);
-    uint x = sizeof(g->tab[i]);
-    uint y = sizeof(g->tab_init[i+1]);
+    uint v = g->cell[i];
+    uint w = g->cell[i+1];
+    uint x = g->tab[i];
+    uint y = g->tab_init[i+1];
     if (v != w || x != y){
-      fprintf(stderr, "Error size not equal");
+      fprintf(stderr, "Error case not equal");
       game_delete(g);
       return false;
     }

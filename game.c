@@ -90,8 +90,8 @@ game game_new_empty() {
     fprintf(stderr, "errrr\n");
     exit(1);
   }
-  
-  g->nbmax = SIZE;
+
+  g->nbmax = 0;
   g->width=SIZE;
   g->height=SIZE;
   g->nbmovecur = 0;
@@ -143,7 +143,7 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   if (g == NULL) {
     exit(EXIT_FAILURE);
   }
-  if (c < 0 || c > 3 || x >= SIZE || y >= SIZE) {
+  if (c < 0 || c >=NB_COLORS || x >= SIZE || y >= SIZE) {
     exit(EXIT_FAILURE);
   }
   g->cell_init[(x * (g->width)) + y] = c;
@@ -151,7 +151,7 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
 }
 
 void game_set_max_moves(game g, uint nb_max_moves) {
-  if (g == NULL || nb_max_moves == 0) {
+  if (g == NULL || nb_max_moves <= 0) {
     fprintf(stderr, "not enogh memory!\n");
     exit(EXIT_FAILURE);
   }
