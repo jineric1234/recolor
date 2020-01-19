@@ -146,8 +146,8 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   if (c < 0 || c >=NB_COLORS || x >= SIZE || y >= SIZE) {
     exit(EXIT_FAILURE);
   }
-  g->cell_init[(x * (g->width)) + y] = c;
-  g->cell[(x * (g->width)) + y] = c;
+  g->cell_init[(x * (g->height)) + y] = c;
+  g->cell[(x * (g->height)) + y] = c;
 }
 
 void game_set_max_moves(game g, uint nb_max_moves) {
@@ -175,7 +175,7 @@ color game_cell_current_color(cgame g, uint x, uint y) {
     fprintf(stderr, "mauvais données pour  height game_cell_current_color \n");
     exit(EXIT_FAILURE);
   }
-  return g->cell[(x * (g->width)) + y];
+  return g->cell[(x * (g->height)) + y];
 }
 
 game game_copy(cgame g) {
@@ -233,69 +233,69 @@ void game_play_one_move(game g, color v){
   int width = g->width; //evite de reecrire g->width
   color c = game_cell_current_color(g, 0, 0);
   for (uint i=0; i<(height*width); i++){
-    int x = i/width;
-    int y = i%width;
+    int x = i/height;
+    int y = i%height;
     if (g->tab[i]==true){
       if (g->wrapping==false){ //wrapping false jeu normal
         if (estValide(g, x ,y+1)){//case droite
             if (game_cell_current_color(g, x, y+1)==c){
-                g->tab[x*width+y+1]=true;
+                g->tab[x*height+y+1]=true;
             }
         }
         if (estValide(g, x,y-1)){//case gauche
             if (game_cell_current_color(g, x, y-1)==c){
-                g->tab[x*width+y-1]=true;
+                g->tab[x*height+y-1]=true;
             }
         }
         if (estValide(g, x-1,y)){//case superieure
             if (game_cell_current_color(g, x-1, y)==c){
-                g->tab[(x-1)*width+y]=true;
+                g->tab[(x-1)*height+y]=true;
             }
         }
         if (estValide(g, x+1 ,y)){//case inferieure
             if (game_cell_current_color(g, x+1, y)==c){
-                g->tab[(x+1)*width+y]=true;
+                g->tab[(x+1)*height+y]=true;
             }
         }
         g->cell[i]=v;
       }
       else{ //wrapping true changement regles
-        if (y==(width-1)){ //case de droite
+        if (y==(height-1)){ //case de droite
           if (game_cell_current_color(g, x, 0)==c){
-            g->tab[x*width]=true;
+            g->tab[x*height]=true;
           }
         }
-        if (y<(width-1)){
+        if (y<(height-1)){
           if (game_cell_current_color(g, x, y+1)==c){
-            g->tab[x*width+y+1]=true;
+            g->tab[x*height+y+1]=true;
           }
         }
         if (y==0){ //case de gauche
           if (game_cell_current_color(g, x, (width-1))==c){
-              g->tab[x*width+(width-1)]=true;
+              g->tab[x*height+(height-1)]=true;
           }
         }
         if (y!=0){
           if (game_cell_current_color(g, x, y-1)==c){
-              g->tab[x*width+y-1]=true;
+              g->tab[x*height+y-1]=true;
           }
         }
         if (x==0){ //case haut
-          if (game_cell_current_color(g, (height-1), y)==c){
-            g->tab[((height-1)*width)+y]=true;
+          if (game_cell_current_color(g, (width-1), y)==c){
+            g->tab[((width-1)*height)+y]=true;
           }
         }
         if (x!=0){
           if (game_cell_current_color(g, x-1, y)==c){
-            g->tab[(x-1)*width+y]=true;
+            g->tab[(x-1)*height+y]=true;
           }
         }
-        if (x==(height-1)){ // case en bas
+        if (x==(width-1)){ // case en bas
           if (game_cell_current_color(g, 0, y)==c){
               g->tab[y]=true;
           }
         }
-        if (x!=(height-1)){
+        if (x!=(width-1)){
           if (game_cell_current_color(g, x+1, y)==c){
               g->tab[(x+1)*width+y]=true;
           }
@@ -305,69 +305,69 @@ void game_play_one_move(game g, color v){
     }
   }
   for (uint i=(width*height)-1; i>0; i--){
-    int x = i/width;
-    int y = i%width;
+    int x = i/height;
+    int y = i%height;
     if (g->tab[i]==true){
       if (g->wrapping==false){ //wrapping false jeu normal
         if (estValide(g, x ,y+1)){//case droite
             if (game_cell_current_color(g, x, y+1)==c){
-                g->tab[x*width+y+1]=true;
+                g->tab[x*height+y+1]=true;
             }
         }
         if (estValide(g, x,y-1)){//case gauche
             if (game_cell_current_color(g, x, y-1)==c){
-                g->tab[x*width+y-1]=true;
+                g->tab[x*height+y-1]=true;
             }
         }
         if (estValide(g, x-1,y)){//case superieure
             if (game_cell_current_color(g, x-1, y)==c){
-                g->tab[(x-1)*width+y]=true;
+                g->tab[(x-1)*height+y]=true;
             }
         }
         if (estValide(g, x+1 ,y)){//case inferieure
             if (game_cell_current_color(g, x+1, y)==c){
-                g->tab[(x+1)*width+y]=true;
+                g->tab[(x+1)*height+y]=true;
             }
         }
         g->cell[i]=v;
       }
       else{ //wrapping true changement regles
-        if (y==(width-1)){ //case de droite
+        if (y==(height-1)){ //case de droite
           if (game_cell_current_color(g, x, 0)==c){
-            g->tab[x*width]=true;
+            g->tab[x*height]=true;
           }
         }
-        if (y<(width-1)){
-          if (game_cell_current_color(g, x, y)==c){
-            g->tab[x*width+y+1]=true;
+        if (y<(height-1)){
+          if (game_cell_current_color(g, x, y+1)==c){
+            g->tab[x*height+y+1]=true;
           }
         }
         if (y==0){ //case de gauche
           if (game_cell_current_color(g, x, (width-1))==c){
-              g->tab[x*width+(width-1)]=true;
+              g->tab[x*height+(height-1)]=true;
           }
         }
         if (y!=0){
           if (game_cell_current_color(g, x, y-1)==c){
-              g->tab[x*width+y-1]=true;
+              g->tab[x*height+y-1]=true;
           }
         }
         if (x==0){ //case haut
-          if (game_cell_current_color(g, (height-1), y)==c){
-            g->tab[(height-1)*(height-1)+y]=true;
+          if (game_cell_current_color(g, (width-1), y)==c){
+            g->tab[((width-1)*height)+y]=true;
           }
         }
         if (x!=0){
           if (game_cell_current_color(g, x-1, y)==c){
-            g->tab[(x-1)*width+y]=true;
+            g->tab[(x-1)*height+y]=true;
           }
         }
-        if (x==(height-1)){ // case en bas
+        if (x==(width-1)){ // case en bas
           if (game_cell_current_color(g, 0, y)==c){
               g->tab[y]=true;
           }
         }
-        if (x!=(height-1)){
+        if (x!=(width-1)){
           if (game_cell_current_color(g, x+1, y)==c){
               g->tab[(x+1)*width+y]=true;
           }
@@ -438,7 +438,7 @@ bool game_is_wrapping(cgame g) {
   return g->wrapping;
 }
 
-game game_new_empty_ext(uint height, uint width, bool wrapping){
+game game_new_empty_ext(uint width, uint height, bool wrapping){
   game g = (game)malloc(sizeof(struct game_s));
   if (g == NULL) {
     fprintf(stderr, "errrr\n");
@@ -501,7 +501,7 @@ game game_new_empty_ext(uint height, uint width, bool wrapping){
   return g;
 } 
 
-game game_new_ext(uint height, uint width, color *cells, uint nb_moves_max, bool wrapping) {
+game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool wrapping) {
   if (nb_moves_max == 0) {
     fprintf(stderr, "moves max egale a zero\n");
     exit(EXIT_FAILURE);
