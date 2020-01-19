@@ -143,7 +143,7 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   if (g == NULL) {
     exit(EXIT_FAILURE);
   }
-  if (c < 0 || c >=NB_COLORS || x >= SIZE || y >= SIZE) {
+  if (c < 0 || c >=NB_COLORS || x >= g->height || y >= g->width) {
     exit(EXIT_FAILURE);
   }
   g->cell_init[(x * (g->height)) + y] = c;
