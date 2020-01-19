@@ -171,7 +171,7 @@ color game_cell_current_color(cgame g, uint x, uint y) {
     fprintf(stderr, "mauvais données pour game_cell_current_color \n");
     exit(EXIT_FAILURE);
   }
-  if ( x >= (g->height) || y >= (g->width)) {
+  if ( x >= (g->width) || y >= (g->height)) {
     fprintf(stderr, "mauvais données pour  height game_cell_current_color \n");
     exit(EXIT_FAILURE);
   }
@@ -198,8 +198,7 @@ game game_copy(cgame g) {
   game_copy->nbmovecur = g->nbmovecur;
   game_copy->height = g->height;
   game_copy->width = g->width;
-  game_copy->wrapping = g->wrapping;
-  
+ 
   return game_copy;
 }
 
@@ -304,7 +303,7 @@ void game_play_one_move(game g, color v){
       }
     }
   }
-  for (uint i=(width*height)-1; i>0; i--){
+  for (uint i=(height*width); i>0; i--){
     int x = i/height;
     int y = i%height;
     if (g->tab[i]==true){
@@ -343,7 +342,7 @@ void game_play_one_move(game g, color v){
           }
         }
         if (y==0){ //case de gauche
-          if (game_cell_current_color(g, x, (width-1))==c){
+          if (game_cell_current_color(g, x, (height-1))==c){
               g->tab[x*height+(height-1)]=true;
           }
         }
