@@ -18,6 +18,9 @@ struct game_s {
   unsigned int height;
 };
 
+
+
+
 game game_new(color *cells, uint nb_moves_max) {
   if (nb_moves_max == 0) {
     fprintf(stderr, "moves max egale a zero");
@@ -75,6 +78,7 @@ game game_new(color *cells, uint nb_moves_max) {
       g->tab_init[i] = false;
     }
   }
+  g->wrapping=false;
   g->height=SIZE;
   g->width=SIZE;
   return g;
@@ -86,7 +90,7 @@ game game_new_empty() {
     fprintf(stderr, "errrr\n");
     exit(1);
   }
-  g->nbmax = 0;
+  g->nbmax = SIZE;
   g->nbmovecur = 0;
   g->cell = (color *)malloc(SIZE * SIZE * sizeof(color));
   if (g->cell == NULL) {
@@ -129,6 +133,7 @@ game game_new_empty() {
       g->tab_init[i] = false;
     }
   }
+  g->wrapping=false;
   g->width=SIZE;
   g->height=SIZE;
   return g;
@@ -141,8 +146,8 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   if (c < 0 || c > 3 || x >= SIZE || y >= SIZE) {
     exit(EXIT_FAILURE);
   }
-  g->cell_init[(x * SIZE) + y] = c;
-  g->cell[(x * SIZE) + y] = c;
+  g->cell_init[(x * (g->width)) + y] = c;
+  g->cell[(x * (g->width)) + y] = c;
 }
 
 void game_set_max_moves(game g, uint nb_max_moves) {
@@ -178,8 +183,12 @@ game game_copy(cgame g) {
     fprintf(stderr, "POINTEUR null\n");
     exit(EXIT_FAILURE);
   }
-  game game_copy = game_new_empty();
-  for (int i = 0; i < (g->height) * (g->width); i++) {
+  game game_copy = game_new_empty_ext(g->width, g->height, g->wrapping);
+  if (game_copy==NULL){
+    fprintf(stderr, "error creatin struct of copy\n");
+    exit(EXIT_FAILURE);
+  }
+  for (int i = 0; i < ((g->height) * (g->width)); i++) {
     game_copy->cell[i] = g->cell[i];
     game_copy->cell_init[i] = g->cell_init[i];
     game_copy->tab[i] = g->tab[i];
@@ -190,6 +199,7 @@ game game_copy(cgame g) {
   game_copy->height = g->height;
   game_copy->width = g->width;
   game_copy->wrapping = g->wrapping;
+  
   return game_copy;
 }
 
@@ -403,12 +413,14 @@ void game_restart(game g) {
     exit(EXIT_FAILURE);
   }
   g->nbmovecur = 0;
-  if (g->cell_init == NULL || g->tab_init == NULL || g->cell == NULL ||
-      g->tab == NULL) {
+  if (g->cell_init == NULL 
+  || g->tab_init == NULL
+  || g->cell == NULL 
+  || g->tab == NULL) {
     fprintf(stderr, "erruer structure \n");
     exit(EXIT_FAILURE);
   }
-  for (int i = 0; i < (g->height) * (g->width); i++) {
+  for (int i = 0; i < (g->height * g->width); i++) {
     g->cell[i] = g->cell_init[i];
     g->tab[i] = g->tab_init[i];
   }
@@ -420,6 +432,9 @@ bool game_is_wrapping(cgame g) {
   if (g==NULL){
     fprintf(stderr,"error pointer!\n");
   }
+  if (g->wrapping != true && g->wrapping != false){
+    fprintf(stderr,"error wprapping!\n");
+  }
   return g->wrapping;
 }
 
@@ -429,10 +444,19 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
     fprintf(stderr, "errrr\n");
     exit(EXIT_FAILURE);
   }
-  g->nbmax = 0;
+
+  if (width <= 0
+  || height <= 0
+  || (wrapping != true && wrapping != false)){
+    fprintf(stderr, "Error in parametre! \n");
+    exit(EXIT_FAILURE);
+  }
+
   g->nbmovecur = 0;
   g->height=height;
   g->width=width;
+  g->wrapping=wrapping;
+
   g->cell = (color *)malloc(width * height * sizeof(color));
   if (g->cell == NULL) {
     fprintf(stderr, "jeu non initialisé\n");
@@ -463,7 +487,7 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
     free(g);
     exit(EXIT_FAILURE);
   }
-  for (int i = 0; i < width * height; i++) {
+  for (int i = 0; i < (width * height); i++) {
     g->cell_init[i] = 0;
     g->cell[i] = 0;
     if (i == 0) {
@@ -474,7 +498,6 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
       g->tab_init[i] = false;
     }
   }
-  g->wrapping=wrapping;
   return g;
 } 
 
@@ -491,6 +514,11 @@ game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool
     fprintf(stderr, "width ou height inferieur ou égale a 0\n");
     exit(EXIT_FAILURE);
   }
+  if (wrapping != true && wrapping != false){
+    fprintf(stderr, "Error wrapping\n");
+    exit(EXIT_FAILURE);
+  }
+    //repmlisage de la structure 
   game g =  malloc(sizeof(struct game_s));
   if (g == NULL) {
     fprintf(stderr, "jeu non initialisé\n");

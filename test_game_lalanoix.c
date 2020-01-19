@@ -47,22 +47,31 @@ bool test_game_restart(){
 
   uint height= g->height;
   uint width = g->width;
+  bool wrapping = g->wrapping;
+  uint movecur = g->nbmax;
+
   game_restart(g);
-  for (uint x=0; x < (height*width); x++){
-    if (g->tab[x] != g->tab_init[x]
-    || g->cell[x] != g->cell_init[x]){
-      fprintf(stderr, "Error:defaut restart\n");
-      game_delete(g);
-      return false;
-    }
-  }
-  if (g->nbmax!=SIZE
-  || g->nbmovecur!=0){
+
+  if (g->nbmax!=movecur
+  || g->nbmovecur!=0
+  || g->height != height
+  || g->width != width
+  || g->wrapping != wrapping){
     fprintf(stderr, "Error:defaut nbmax ou nbcur\n");
     game_delete(g);
     return false;
   }
 
+  for (uint y=0; y<(height*width); y++){
+    if (g->cell[y] != cell[y]
+    || g->cell_init[y] != cell[y]
+    || ((y==0) && g->tab[y] != true )
+    || ((y!=0) && g->tab_init[y] != false)){
+      fprintf(stderr, "Error:defaut restart 1\n");
+      game_delete(g);
+      return false;
+    }
+  }
   game_delete(g);
   return true;
 }

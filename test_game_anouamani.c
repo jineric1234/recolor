@@ -7,6 +7,12 @@
 #include "game.h"
 #include "game_io.h"
 
+/* ****** TEST GAME DEFAULT ******** */
+
+bool test_gamedef(){
+
+  return true;
+}
 
 /* ******** TEST NB MOUVES ******** */
 bool test_nbmovescur(int k, int c){ //error game02.o
@@ -50,15 +56,16 @@ bool test_playonemouve(int k, int b){
     return false;
   }
 
-  unsigned int c = game_cell_current_color(g, 0, 0);
+  uint c = game_cell_current_color(g, 0, 0);
   if (c<0 && c>=NB_COLORS){
     fprintf(stderr, "Error: color< 0 or color > 3!\n");
     game_delete(g);
     return false;
   }
-  unsigned int move= game_nb_moves_cur(g);
+  uint move= game_nb_moves_cur(g);
   for (unsigned int i=0; i<b; i++){game_play_one_move(g, k);}
-  unsigned int c_cell=game_cell_current_color(g, 0, 0);
+  
+  uint c_cell=game_cell_current_color(g, 0, 0);
 
   if (k!=c_cell){
     fprintf(stderr, "Error: color didn't change!\n");
@@ -91,8 +98,7 @@ bool test_emptyext(int h, int w){
   || g->nbmax!=0
   || g->height!=h
   || g->width!=w
-  || g->wrapping!= true
-  ){
+  || g->wrapping!= true){
     fprintf(stderr, "1\n");
     return false;
   }
@@ -120,10 +126,10 @@ bool test_emptyext(int h, int w){
 
 /* ******** TEST GAME COPY ******** */
 
-bool test_copy(int k){
-  game g = game_new_empty();
+bool test_copy(int k, int width, int height, bool wrapping){
+  game g = game_new_empty_ext(width, height, wrapping);
   if (g == NULL){
-    fprintf(stderr, "Error: invalid recolor init!\n");
+    fprintf(stderr, "Error: game g is NULL!\n");
     return false;
   }
 
@@ -131,8 +137,20 @@ bool test_copy(int k){
   game c = game_copy(g);
   if (c == NULL){
     fprintf(stderr, "Error: invalid copy of recolor init!\n");
+    game_delete(g);
     return false;
   }
+  if (g->height != c->height
+  || g->width != c->width
+  || g->wrapping != c->wrapping
+  || g->nbmax != c->nbmax
+  || g->nbmovecur != c->nbmovecur){
+    fprintf(stderr, "Error: parameters not equal!\n");
+    game_delete(c);
+    game_delete(g);
+    return false;
+  }
+
   for (unsigned int x = 0; x<(g->height); x++){
     for (unsigned int y = 0; y<(g->height); y++){
       if (game_cell_current_color(g, x, y)!= game_cell_current_color(c, x, y)){
@@ -146,19 +164,36 @@ bool test_copy(int k){
   game_delete(c);
 
   //test copy apres des mouvements effectués
-  game_play_one_move(g, k);
+  for (uint i=0; i<5; i++){
+    uint tab[]={2,1,0,3,2};
+    game_play_one_move(g, tab[i]);
+  }
   game v = game_copy(g);
+  if (v==NULL){
+    fprintf(stderr, "Error: la copie n.2 n'est pas identique!\n");
+  }
+  if (g->height != v->height
+  || g->width != v->width
+  || g->wrapping != v->wrapping
+  || g->nbmax != v->nbmax
+  || g->nbmovecur != v->nbmovecur){
+    fprintf(stderr, "Error: parameters not equal!\n");
+    game_delete(v);
+    game_delete(g);
+    return false;
+  }
 
-  for (unsigned int x= 0; x<SIZE; x++){
-    for (unsigned int y= 0; y<SIZE; y++){
+  for (unsigned int x= 0; x<(g->height); x++){
+    for (unsigned int y= 0; y<(g->width); y++){
       if (game_cell_current_color(g, x, y)!= game_cell_current_color(v, x, y)){
         fprintf(stderr, "Error: la copie n.2 n'est pas identique!\n");
+        game_delete(v);
         game_delete(g);
         return false;
       }
     }
   }
-
+  game_delete(v);
   game_delete(g);
   return true;
 
@@ -182,7 +217,9 @@ int main(int argc, char *argv[]){
   else if (strcmp("playonemove", argv[1]) == 0)
     ok = test_playonemouve(2, 30);
   else if (strcmp("copy", argv[1]) == 0)
-    ok=test_copy(2);
+    ok=test_copy(3, 7, 5, false);
+  else if (strcmp("gamedef", argv[1]) == 0)
+    ok=test_gamedef();
   else if ((strcmp("emptyext", argv[1]) == 0))
     ok=test_emptyext(5,7);
   else {
