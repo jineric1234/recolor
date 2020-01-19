@@ -90,7 +90,10 @@ game game_new_empty() {
     fprintf(stderr, "errrr\n");
     exit(1);
   }
+  
   g->nbmax = SIZE;
+  g->width=SIZE;
+  g->height=SIZE;
   g->nbmovecur = 0;
   g->cell = (color *)malloc(SIZE * SIZE * sizeof(color));
   if (g->cell == NULL) {
@@ -133,9 +136,6 @@ game game_new_empty() {
       g->tab_init[i] = false;
     }
   }
-  g->wrapping=false;
-  g->width=SIZE;
-  g->height=SIZE;
   return g;
 }
 
