@@ -438,7 +438,7 @@ bool game_is_wrapping(cgame g) {
   return g->wrapping;
 }
 
-game game_new_empty_ext(uint width, uint height, bool wrapping){
+game game_new_empty_ext(uint height, uint width, bool wrapping){
   game g = (game)malloc(sizeof(struct game_s));
   if (g == NULL) {
     fprintf(stderr, "errrr\n");
@@ -501,7 +501,7 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
   return g;
 } 
 
-game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool wrapping) {
+game game_new_ext(uint height, uint width, color *cells, uint nb_moves_max, bool wrapping) {
   if (nb_moves_max == 0) {
     fprintf(stderr, "moves max egale a zero\n");
     exit(EXIT_FAILURE);
