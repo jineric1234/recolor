@@ -46,10 +46,42 @@ void game_display(game g){
          printf("Jouer un coup: (num couleur ou r pour redemarrer ou q pour quitter)\n");
     }
 }
-
+/*
 int main(void){
     game g = game_default();
     game_set_max_moves(g, SIZE);
+    game_display(g);
+
+    while (game_is_over(g)==false){
+        char value= getchar();
+        if (value >= 48 && value <= 51){ valeur de 1, 2, 3 et 0
+            value=value-48;
+            game_play_one_move(g, value);
+            game_display(g);
+        }
+         Restart le jeu 
+        if (value == 82 || value == 114){ valeur de r et R
+            game_restart(g);
+            game_display(g);
+        }
+        
+        Quitter le jeu 
+        if (value == 81 || value == 113){ valeur de q et Q
+            printf("DOMMAGE\n");
+            game_delete(g);
+            return EXIT_SUCCESS;
+        }
+    }
+    if(game_nb_moves_cur(g)<=game_nb_moves_max(g)){
+        printf("BRAVO\n");
+        game_delete(g);
+    }
+
+    return EXIT_SUCCESS;
+
+} */
+
+ int play_recolor(game g){
     game_display(g);
 
     while (game_is_over(g)==false){
@@ -79,6 +111,20 @@ int main(void){
 
     return EXIT_SUCCESS;
 
-}/* Laura ALANOIX */
+    }
+
+int main(int argc, char *argv[]){
+    if(argc==1){
+        game g = game_default();
+        play_recolor(g);
+    }
+    else { 
+        game g = game_load(argv[1]);
+        play_recolor(g);
+   
+    }
+}
+
+/* Laura ALANOIX */
 /* Ayoub NOUAMANI*/
 /* Eric JIN */
