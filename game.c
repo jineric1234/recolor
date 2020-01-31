@@ -152,7 +152,7 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
 
 void game_set_max_moves(game g, uint nb_max_moves) {
   if (g == NULL || nb_max_moves <= 0) {
-    fprintf(stderr, "not enogh memory!\n");
+    fprintf(stderr, "not enough memory!1\n");
     exit(EXIT_FAILURE);
   }
   g->nbmax = nb_max_moves;
@@ -160,7 +160,7 @@ void game_set_max_moves(game g, uint nb_max_moves) {
 
 uint game_nb_moves_max(cgame g) {
   if (g == NULL) {
-    fprintf(stderr, "not enogh memory!\n");
+    fprintf(stderr, "not enough memory!2\n");
     exit(EXIT_FAILURE);
   }
   return g->nbmax;
@@ -170,12 +170,12 @@ color game_cell_current_color(cgame g, uint x, uint y) {
   if (g == NULL) {
     fprintf(stderr, "mauvais données pour game_cell_current_color \n");
     exit(EXIT_FAILURE);
-  }
+  } /*
   if ( x >= (g->width) || y >= (g->height)) {
     fprintf(stderr, "mauvais données pour  height game_cell_current_color \n");
     exit(EXIT_FAILURE);
-  }
-  return g->cell[(x * (g->height)) + y];
+  } */
+  return g->cell[(x * (g->width)) + y];
 }
 
 game game_copy(cgame g) {
@@ -223,7 +223,7 @@ void game_play_one_move(game g, color v){
       fprintf(stderr, "POINTEUR null\n");
       exit(EXIT_FAILURE);
   }
-  if (v<0 || v>=NB_COLORS){
+  if (v<0){
       fprintf(stderr, "Couleur innexistante\n");
       exit(EXIT_FAILURE);
   }

@@ -86,7 +86,7 @@ int main(void){
 
     while (game_is_over(g)==false){
         char value= getchar();
-        if (value >= 48 && value <= 51){ /*valeur de 1, 2, 3 et 0*/
+        if (value >= 48 && value <= 57){ /*valeur de 1, 2, 3 et 0*/
             value=value-48;
             game_play_one_move(g, value);
             game_display(g);

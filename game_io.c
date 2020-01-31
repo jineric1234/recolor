@@ -41,7 +41,7 @@ game game_load(char *filename){
         fprintf(stderr,"error!\n");
         exit(EXIT_FAILURE);
     }
-    return NULL;
+    
     uint w,h,nb_moves_max;
     char is_swap;
     fscanf(f,"%d %d %d %c\n",&w,&h,&nb_moves_max,&is_swap);
@@ -51,7 +51,7 @@ game game_load(char *filename){
         exit(EXIT_FAILURE);
     }
     uint k=0;
-    for(uint i=0;i<h-1;i++){
+    for(uint i=0;i<h;i++){
         for(uint j=0;j<w;j++){
             fscanf(f,"%d",&colour[k]);
             k=k+1;
@@ -82,7 +82,7 @@ void game_save(cgame g, char *filename){
         exit(EXIT_FAILURE);
     }
     fprintf(f,"%d %d %d %c\n",game_width(g),game_height(g),game_nb_moves_max(g),swap(g));
-    for(uint i=0;i<game_height(g)-1;i++){
+    for(uint i=0;i<game_height(g);i++){
         for(uint j=0;j<game_width(g)-1;j++){
             fprintf(f,"%d",game_cell_current_color(g,j,i));
         }       
@@ -92,3 +92,6 @@ void game_save(cgame g, char *filename){
 fclose(f);
 }
 #endif  
+
+/* probleme horizontal : PLAY ONE MOVE
+                        WRAPPING ? NORMAL ? */
