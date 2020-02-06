@@ -85,8 +85,8 @@ void game_save(cgame g, char *filename){
     fprintf(f,"%d %d %d %c\n",game_width(g),game_height(g),game_nb_moves_max(g),swap(g));
     for(uint i=0;i<game_height(g);i++){
         for(uint j=0;j<game_width(g)-1;j++){
-            if (j<(game_width(g)-1)){fprintf(f,"%d",game_cell_current_color(g,j,i));}
-            else{fprintf(f,"%d",game_cell_current_color(g,j,i));}
+            if (j<(game_width(g)-1)){fprintf(f,"%d",game_cell_current_color(g,i,j));}
+            else{fprintf(f,"%d",game_cell_current_color(g,i,j));}
         }       
         
         fprintf(f,"\n");
