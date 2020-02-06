@@ -47,7 +47,9 @@ game game_load(char *filename){
     fscanf(f,"%d %d %d %c\n",&w,&h,&nb_moves_max,&is_swap);
 
     color *colour = malloc(w* h * sizeof(color)); //il faut lire ligne par ligne les cases selon la hauteur et la largeur "<color[x][y]>"
+
     if(colour==NULL){
+        free(colour);
         fclose(f);
         exit(EXIT_FAILURE);
     }
@@ -66,7 +68,9 @@ game game_load(char *filename){
     game g =  game_new_ext(w,h,colour,nb_moves_max,swapping);
     if (g==NULL){
         fprintf(stderr,"g is null\n");
+        exit(EXIT_FAILURE);
     }
+    free(colour);
     return g;
 }
 
