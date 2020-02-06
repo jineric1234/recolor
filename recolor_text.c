@@ -115,7 +115,7 @@ int main(void){
         printf("BRAVO\n");
         game_delete(g);
     }
-    game_delete(g);
+    
     return EXIT_SUCCESS;
 
     }
