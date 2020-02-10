@@ -36,7 +36,7 @@ void game_display(game g){
     for (int x= 0; x < height; x++){
         for(int y= 0; y < width; y++){
             int v = game_cell_current_color(g, x, y);
-            if (v>=0 && v<=9){printf("%d",v);}
+            if (v>=0 && v<=15){printf("%d",v);}
             if (v==65){printf("A");}
             if (v==66){printf("B");}
             if (v==67){printf("C");}
@@ -92,9 +92,9 @@ int main(void){
 
     while (game_is_over(g)==false){
         char value= getchar();
-        if ((value >= 48 && value <= 58)
+        if ((value >= 48 && value <= 63) /* pour aller jusqu'a 15*/
         || (value>=65 && value <= 70)){ /*valeur de 1, 2, 3 et 0*/
-            if(value >= 48 && value <= 57){
+            if(value >= 48 && value <= 63){
                 value=value-48;
             }
             else{
