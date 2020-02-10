@@ -37,12 +37,12 @@ void game_display(game g){
         for(int y= 0; y < width; y++){
             int v = game_cell_current_color(g, x, y);
             if (v>=0 && v<=9){printf("%d",v);}
-            if (v==49){printf("a");}
-            if (v==50){printf("b");}
-            if (v==51){printf("c");}
-            if (v==52){printf("d");}
-            if (v==53){printf("e");}
-            if (v==54){printf("f");}
+            if (v==65){printf("A");}
+            if (v==66){printf("B");}
+            if (v==67){printf("C");}
+            if (v==68){printf("D");}
+            if (v==69){printf("E");}
+            if (v==70){printf("F");}
         }
         printf("\n");
     }
@@ -92,9 +92,14 @@ int main(void){
 
     while (game_is_over(g)==false){
         char value= getchar();
-        if ((value >= 48 && value <= 57)
-        || (value>=97 && value <= 107)){ /*valeur de 1, 2, 3 et 0*/
-            value=value-48;
+        if ((value >= 48 && value <= 58)
+        || (value>=65 && value <= 70)){ /*valeur de 1, 2, 3 et 0*/
+            if(value >= 48 && value <= 57){
+                value=value-48;
+            }
+            else{
+                value=value;
+            }    
             game_play_one_move(g, value);
             game_display(g);
         }
