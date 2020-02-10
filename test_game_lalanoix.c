@@ -3,9 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "game_io.c"
 #include "game_io.h"
 #include "game.h"
 #include "game.c"
+
+
+
 #define WITDH 10
 #define HEIGHT 10
 /* ********** USAGE ********** */
@@ -14,6 +18,7 @@ void usage(int argc, char *argv[]) {
   fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
   exit(EXIT_FAILURE);
 }
+
 
 /* ********** TEST RESTART ********** */
 
@@ -170,6 +175,44 @@ bool test_width(uint width) {
   return true;
 } 
 
+bool test_gameload(){
+   game f = game_new_empty_ext(12,12,false);
+  game g = game_load("default_game.rec");
+  if (game_nb_moves_max(g)!=game_nb_moves_max(f)){
+    return false;
+  }
+  if(game_height(g)!=game_height(f)){
+    return false;
+  }
+  if(game_width(g)!=game_width(f)){
+    return false;
+  }
+
+  if(game_is_wrapping(g)!=game_is_wrapping(f)){
+    return false;
+  }
+  return true;
+}
+
+bool test_gamesave(){
+   game f = game_new_empty_ext(12,12,false);
+  game_save(f,"default_game2.rec");
+  if (game_nb_moves_max(f)!=game_nb_moves_max(f)){
+    return false;
+  }
+  if(game_height(f)!=game_height(f)){
+    return false;
+  }
+  if(game_width(f)!=game_width(f)){
+    return false;
+  }
+
+  if(game_is_wrapping(f)!=game_is_wrapping(f)){
+    return false;
+  }
+  return true;
+}
+
 /* ********** MAIN ROUTINE ********** */
 
 int main(int argc, char *argv[]) {
@@ -187,7 +230,11 @@ int main(int argc, char *argv[]) {
   else if (strcmp("iswrapping", argv[1]) == 0)
     ok = test_iswrapping();
   else if (strcmp("width", argv[1]) == 0)
-    ok = test_width(7);
+    ok = test_width(7); 
+  else if (strcmp("load", argv[1]) == 0)
+    ok = test_gameload();
+  else if (strcmp("save", argv[1]) == 0)
+    ok = test_gamesave(); 
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);

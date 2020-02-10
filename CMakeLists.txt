@@ -36,6 +36,8 @@ add_test(test_game_is_over test_game_lalanoix isover)
 add_test(test_game_delete test_game_lalanoix delete)
 add_test(test_iswrapping test_game_lalanoix iswrapping)
 add_test(test_width test_game_lalanoix width)
+add_test(test_gameload test_game_lalanoix load)
+add_test(test_gamesave test_game_lalanoix save)
 add_executable(test_game_lalanoix test_game_lalanoix.c)
 
 #Test anouamani
