@@ -110,7 +110,7 @@ int main(void){
         }
         
         /* Quitter le jeu */
-        if (value == 81 || value == 113){ /*valeur de q et Q*/
+        if (value == 81 || value == 113 || game_nb_moves_cur(g)==game_nb_moves_max(g)){ /*valeur de q et Q*/
             printf("DOMMAGE\n");
             game_delete(g);
             return EXIT_SUCCESS;
