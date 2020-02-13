@@ -6,12 +6,14 @@ project (recolor-text)
 set(CMAKE_C_FLAGS "-std=c99 -g -Wall --coverage")
 #définit le nom du programme ainsi que 
 #ses sources
+add_executable(recolor_solve recolor_solve.c)
 add_executable(recolor_text game.h game_io.h recolor_text.c)
 #les dépendances sont calculées automatiquement
 
 add_library(game game.c game_io.c)
 
 target_link_libraries(recolor_text game)
+
 
 
 #Test ejin
