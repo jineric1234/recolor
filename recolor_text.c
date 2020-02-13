@@ -36,13 +36,13 @@ void game_display(game g){
     for (int x= 0; x < height; x++){
         for(int y= 0; y < width; y++){
             int v = game_cell_current_color(g, x, y);
-            if (v>=0 && v<=15){printf("%d",v);}
-            if (v==65){printf("A");}
-            if (v==66){printf("B");}
-            if (v==67){printf("C");}
-            if (v==68){printf("D");}
-            if (v==69){printf("E");}
-            if (v==70){printf("F");}
+            if (v>=0 && v<=9){printf("%d",v);}
+            if (v==65 || v==10){printf("A");}
+            if (v==66 || v==11){printf("B");}
+            if (v==67 || v==12){printf("C");}
+            if (v==68 || v==13){printf("D");}
+            if (v==69 || v==14){printf("E");}
+            if (v==70 || v==15){printf("F");}
         }
         printf("\n");
     }
@@ -92,14 +92,13 @@ int main(void){
 
     while (game_is_over(g)==false){
         char value= getchar();
-        if ((value >= 48 && value <= 63) /* pour aller jusqu'a 15*/
-        || (value>=65 && value <= 70)){ /*valeur de 1, 2, 3 et 0*/
-            if(value >= 48 && value <= 63){
+        if ((value >= 48 && value <= 57) /* de 0 a 9*/
+        || (value>=65 && value <= 70)){ /*de A a F*/
+            if(value >= 48 && value <= 57){
                 value=value-48;
+            }else{
+                value=value-55;
             }
-            else{
-                value=value;
-            }    
             game_play_one_move(g, value);
             game_display(g);
         }
@@ -108,7 +107,6 @@ int main(void){
             game_restart(g);
             game_display(g);
         }
-        
         /* Quitter le jeu */
         if (value == 81 || value == 113 || game_nb_moves_cur(g)>game_nb_moves_max(g)){ /*valeur de q et Q*/
             printf("DOMMAGE\n");
@@ -120,7 +118,6 @@ int main(void){
         printf("BRAVO\n");
         game_delete(g);
     }
-    
     return EXIT_SUCCESS;
 
     }

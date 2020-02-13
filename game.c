@@ -60,11 +60,11 @@ color game_cell_current_color(cgame g, uint x, uint y) {
   if (g == NULL) {
     fprintf(stderr, "mauvais données pour game_cell_current_color \n");
     exit(EXIT_FAILURE);
-  } 
+  }
   if ( x >= (g->height) || y >= (g->width)) {
     fprintf(stderr, "mauvais données pour  height game_cell_current_color \n");
     exit(EXIT_FAILURE);
-  } 
+  }
   return g->cell[(x * (g->width)) + y];
 }
 
