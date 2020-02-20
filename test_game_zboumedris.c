@@ -70,7 +70,7 @@ bool test_game_cell_current_color() {
 
   for (uint x = 0; x < (height*width); x++) {
     unsigned int c = game_cell_current_color(dgame, x/width, x%width);
-    if (c < 0 || c >= NB_COLORS) {
+    if (c >= NB_COLORS) {
       fprintf(stderr, "Error: color out limit!\n");
       game_delete(dgame);
       return false;
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
             "\"%s\" not found!\n",
             argv[1]);
     exit(EXIT_FAILURE);
-    void game_delete(game g);
+  
   }
 
   // print test result

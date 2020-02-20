@@ -33,7 +33,7 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   if (g == NULL) {
     exit(EXIT_FAILURE);
   }
-  if (c < 0 || c >=NB_COLORS || x >= g->height || y >= g->width) {
+  if ( c >=NB_COLORS || x >= g->height || y >= g->width) {
     exit(EXIT_FAILURE);
   }
   g->cell_init[(x * (g->height)) + y] = c;
@@ -41,7 +41,7 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
 }
 
 void game_set_max_moves(game g, uint nb_max_moves) {
-  if (g == NULL || nb_max_moves <= 0) {
+  if (g == NULL) {
     fprintf(stderr, "not enough memory!1\n");
     exit(EXIT_FAILURE);
   }
@@ -113,10 +113,7 @@ void game_play_one_move(game g, color v){
       fprintf(stderr, "POINTEUR null\n");
       exit(EXIT_FAILURE);
   }
-  if (v<0){
-      fprintf(stderr, "Couleur innexistante\n");
-      exit(EXIT_FAILURE);
-  }
+ 
   g->nbmovecur++;
   int height = g->height; //evite de reecrire g->height
   int width = g->width; //evite de reecrire g->width
@@ -334,9 +331,7 @@ game game_new_empty_ext(uint width, uint height, bool wrapping){
     exit(EXIT_FAILURE);
   }
 
-  if (width <= 0
-  || height <= 0
-  || (wrapping != true && wrapping != false)){
+  if ((wrapping != true && wrapping != false)){
     fprintf(stderr, "Error in parametre! \n");
     exit(EXIT_FAILURE);
   }
@@ -399,10 +394,7 @@ game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max, bool
     fprintf(stderr, "cells egale a null\n");
     exit(EXIT_FAILURE);
   }
-  if(width<=0 || height<=0){
-    fprintf(stderr, "width ou height inferieur ou égale a 0\n");
-    exit(EXIT_FAILURE);
-  }
+ 
   if (wrapping != true && wrapping != false){
     fprintf(stderr, "Error wrapping\n");
     exit(EXIT_FAILURE);

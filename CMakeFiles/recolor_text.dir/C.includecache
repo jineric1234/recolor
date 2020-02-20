@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/autofs/unityaccount/cremi/lalanoix/Pro/recolor/game.h
+stdbool.h
+-
+
+/autofs/unityaccount/cremi/lalanoix/Pro/recolor/game_io.h
+stdio.h
+-
+game.h
+/autofs/unityaccount/cremi/lalanoix/Pro/recolor/game.h
+
+/autofs/unityaccount/cremi/lalanoix/Pro/recolor/recolor_text.c
+stdlib.h
+-
+stdio.h
+-
+game.h
+/autofs/unityaccount/cremi/lalanoix/Pro/recolor/game.h
+game_io.h
+/autofs/unityaccount/cremi/lalanoix/Pro/recolor/game_io.h
+
