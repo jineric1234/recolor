@@ -11,16 +11,26 @@
 
 void FIND_ONE (cgame g, char *filename ) {
     FILE * f = fopen(filename,"w");
+    if (f==NULL){
+        exit(EXIT_FAILURE);
+    }
     fprintf(f,"NO SOLUTION\n");
 }
 
 void NB_SOL (cgame g, char *filename) {
+
   FILE * f = fopen(filename,"w");
+   if (f==NULL){
+        exit(EXIT_FAILURE);
+    }
     fprintf(f,"NO SOLUTION\n");
 }
 
 void FIND_MIN (cgame g, char*filename) {
   FILE * f = fopen(filename,"w");
+   if (f==NULL){
+        exit(EXIT_FAILURE);
+    }
     fprintf(f,"NO SOLUTION\n");
 }
 
