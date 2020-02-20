@@ -57,7 +57,7 @@ bool test_playonemouve(int k, int b){
   }
 
   uint c = game_cell_current_color(g, 0, 0);
-  if (c>=NB_COLORS){
+  if (c<0 && c>=NB_COLORS){
     fprintf(stderr, "Error: color< 0 or color > 3!\n");
     game_delete(g);
     return false;

@@ -1,1 +1,0 @@
-/usr/bin/cc  -std=c99 -Wall   CMakeFiles/test_game_zboumedris.dir/test_game_zboumedris.c.o  -o test_game_zboumedris -rdynamic 
