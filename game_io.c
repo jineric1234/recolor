@@ -11,7 +11,6 @@ bool is_swapping(char wrap){
     else if (wrap=='N'){
         return false;
     }
-    
     else {
         fprintf(stderr,"ERROR NI S NI N\n");
         exit(EXIT_FAILURE);
@@ -21,27 +20,26 @@ char swap(cgame g){
     if (g==NULL){
         exit(EXIT_FAILURE);
     }
-    
+
     bool wrapp = game_is_wrapping(g);
     if(wrapp==true){
         return 'S';
     }
     else{
         return 'N';
-    }    
+    }
 }
 
 
-game game_load(char *filename){ 
+game game_load(char *filename){
     if (filename==NULL){
         exit(EXIT_FAILURE);
     }
     FILE *f= fopen(filename,"r");
     if (f==NULL){
-        fprintf(stderr,"error!\n");
+        fprintf(stderr,"Error: filename Null!\n");
         exit(EXIT_FAILURE);
     }
-    
     uint w,h,nb_moves_max;
     char is_swap;
     fscanf(f,"%d %d %d %c\n",&w,&h,&nb_moves_max,&is_swap);
@@ -63,8 +61,7 @@ game game_load(char *filename){
         fprintf(f,"\n");
     }
     bool swapping = is_swapping(is_swap);
-    
-    fclose(f); 
+    fclose(f);
     game g =  game_new_ext(w,h,colour,nb_moves_max,swapping);
     if (g==NULL){
         fprintf(stderr,"g is null\n");
@@ -75,7 +72,7 @@ game game_load(char *filename){
 }
 
 
-void game_save(cgame g, char *filename){ 
+void game_save(cgame g, char *filename){
     if (g==NULL){
         exit(EXIT_FAILURE);
     }
@@ -91,10 +88,9 @@ void game_save(cgame g, char *filename){
         for(uint j=0;j<game_width(g);j++){
             if (j<(game_width(g)-1)){fprintf(f,"%d ",game_cell_current_color(g,i,j));}
             else{fprintf(f,"%d",game_cell_current_color(g,i,j));}
-        }       
-        
+        }
         fprintf(f,"\n");
     }
 fclose(f);
 }
-#endif  
+#endif
