@@ -42,6 +42,7 @@ bool end_moves(int *tab, int size){
 
 void write_solution(char *filename,int *tab, int size_tab){
     FILE * f = fopen(filename,"w");
+<<<<<<< HEAD
     for(uint i = 0; i<=size_tab; i++){
         uint v = tab[i];
         if (v>=0 && v<=9){fprintf(f,"%u ",v);}

@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.3)
 #nom du projet
 project (recolor-text)
 #positionne la variable
-set(CMAKE_C_FLAGS "-std=c99 -g -Wall --coverage")
+
+set(CMAKE_C_FLAGS "-std=c99 -Wall") ### options communes
+set(CMAKE_C_FLAGS_DEBUG "-g -DDEBUG --coverage") ### options spécifiques
+set(CMAKE_C_FLAGS_RELEASE "-O3") ### options spécifiques
 #définit le nom du programme ainsi que 
 #ses sources
 add_executable(recolor_solve recolor_solve.c)
