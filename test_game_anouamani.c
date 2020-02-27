@@ -64,7 +64,7 @@ bool test_playonemouve(int k, int b){
   }
   uint move= game_nb_moves_cur(g);
   for (unsigned int i=0; i<b; i++){game_play_one_move(g, k);}
-  
+
   uint c_cell=game_cell_current_color(g, 0, 0);
 
   if (k!=c_cell){
@@ -88,9 +88,7 @@ bool test_emptyext(int h, int w){
   game g = game_new_empty_ext(w,h,true);
   if (g == NULL
   || g-> cell == NULL
-  || g-> cell_init == NULL
-  || g-> tab == NULL
-  || g-> tab_init == NULL){
+  || g-> cell_init == NULL){
     fprintf(stderr, "Error: invalid new empty ext!\n");
     return false;
   }
@@ -105,18 +103,6 @@ bool test_emptyext(int h, int w){
   for (uint i=0;  i<(g->width)*(g->height); i++){
     if (g->cell[i]!=0 || g->cell_init[i]!=0){
       fprintf(stderr, "2\n");
-      return false;
-    }
-    if (i==0
-    && g->tab[i]!=true
-    && g->tab_init[i]!=true){
-      fprintf(stderr, "3!\n");
-      return false;
-    }
-    if (i!=0
-    && g->tab[i]!=false
-    && g->tab_init[i]!=false){
-      fprintf(stderr, "4\n");
       return false;
     }
   }

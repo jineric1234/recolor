@@ -51,9 +51,7 @@ bool test_game_new(){
   for (uint i=0; i<(g->height*g->width)-1; i++){
     uint v = g->cell[i];
     uint w = g->cell[i+1];
-    uint x = g->tab[i];
-    uint y = g->tab_init[i+1];
-    if (v != w || x != y){
+    if (v != w){
       fprintf(stderr, "Error case not equal");
       game_delete(g);
       return false;
@@ -67,8 +65,7 @@ bool test_game_new(){
         game_delete(g);
         return false;
       }
-      if (g->tab[x] != g->tab_init[x]
-      || g->cell[x] != g->cell_init[x]){
+      if (g->cell[x] != g->cell_init[x]){
         fprintf(stderr, "Error: tab/ cell !\n");
         game_delete(g);
         return false;
@@ -109,9 +106,7 @@ bool test_game_new_empty(){
   for (uint i=0; i<(SIZE*SIZE)-1; i++){
     uint v = sizeof(g->cell[i]);
     uint w = sizeof(g->cell[i+1]);
-    uint x = sizeof(g->tab[i]);
-    uint y = sizeof(g->tab_init[i+1]);
-    if (v != w || x != y){
+    if (v != w ){
       fprintf(stderr, "Error size not equal");
       game_delete(g);
       return false;
@@ -201,10 +196,9 @@ bool test_newext(uint height, uint width){
 
   for (uint x = 0; x < height; x++){
     for (uint y = 0; y < width; y++){
-      if (game_cell_current_color(g, x, y) < 0 
+      if (game_cell_current_color(g, x, y) < 0
       || game_cell_current_color(g, x, y) >= NB_COLORS
-      || g->cell[x*width+y] != g->cell_init[x*width+y]
-      || g->tab[x*width+y] != g->tab_init[x*width+y]){
+      || g->cell[x*width+y] != g->cell_init[x*width+y]){
         fprintf(stderr, "Error: parametrs struct!\n");
         game_delete(g);
         return false;
@@ -215,15 +209,13 @@ bool test_newext(uint height, uint width){
   for (uint i=0; i<(height*width)-1; i++){
     uint v = sizeof(g->cell[i]);
     uint w = sizeof(g->cell[i+1]);
-    uint x = sizeof(g->tab[i]);
-    uint y = sizeof(g->tab_init[i+1]);
-    if (v != w || x != y){
+    if (v != w){
       fprintf(stderr, "Error size not equal");
       game_delete(g);
       return false;
     }
   }
-  
+
   game_delete(g);
   return true;
 }

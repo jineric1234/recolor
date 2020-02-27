@@ -69,9 +69,7 @@ bool test_game_restart(){
 
   for (uint y=0; y<(height*width); y++){
     if (g->cell[y] != cell[y]
-    || g->cell_init[y] != cell[y]
-    || ((y==0) && g->tab[y] != true )
-    || ((y!=0) && g->tab_init[y] != false)){
+    || g->cell_init[y] != cell[y]){
       fprintf(stderr, "Error:defaut restart 1\n");
       game_delete(g);
       return false;
