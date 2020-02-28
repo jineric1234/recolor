@@ -44,22 +44,6 @@ int* near_move(game g){
 }
 
 
-=======
-void write_solution(char *filename,int *tab, int size_tab){
-    FILE * f = fopen(filename,"w");
-    for(uint i = 0; i<=size_tab; i++){
-        uint v = tab[i];
-        if (v>=0 && v<=9){fprintf(f,"%u ",v);}
-        if (v==10){fprintf(f,"A ");}
-        if (v==11){fprintf(f,"B ");}
-        if (v==12){fprintf(f,"C ");}
-        if (v==13){fprintf(f,"D ");}
-        if (v==14){fprintf(f,"E ");}
-        if (v==15){fprintf(f,"F ");}
-    }
-    fclose(f);
-}
->>>>>>> db0c21e6587ab2140f0baea838c52cdca044a06c
 
 
 
