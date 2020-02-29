@@ -8,12 +8,39 @@
 struct game_s {
   color* cell;       // tab with the colors of the current game
   color* cell_init;  // tab with the initial colors
+  bool* tab_bool;    // tab with the changed zone
   uint nbmax;
   uint nbmovecur;
   uint width;
   uint height;
   bool wrapping;
 };
+
+// Game structure initialization
+/**
+ * @brief set perameters in game structure
+ * @param g the game
+ * @param cell game color tab
+ * @param cell_tab game color tab to restart game
+ * @param tab_bool game bool tab to the winned zone
+ * @param nbmax maximal movement at game
+ * @param nbmovecur current movement in game
+ * @param width width
+ * @param height height
+ * @param wrapping boolean for is wrapping or not
+ * @pre @p g is a valid pointer toward a game structure
+ **/
+void set_in_struct(game g, color* cell, color* cell_init, uint nbmax,
+       uint nbmovecur, uint width, uint height, bool wrapping, bool* t_bool) {
+  g->cell = cell;
+  g->cell_init = cell_init;
+  g->nbmax = nbmax;
+  g->nbmovecur = nbmovecur;
+  g->width = width;
+  g->height = height;
+  g->wrapping = wrapping;
+  g->tab_bool = t_bool;
+}
 
 // Error detection
 
@@ -25,7 +52,7 @@ void static test_pointer(void* p) {
 }
 
 void static test_game(cgame game) {
-  if (game == NULL || !game->cell || !game->cell_init) {
+  if (game == NULL || !game->cell || !game->cell_init || !game->tab_bool) {
     game_delete((struct game_s*)game);
     fprintf(stderr, "unvalid game !\n");
     exit(EXIT_FAILURE);
@@ -40,29 +67,6 @@ void static test_coordinates(uint x, uint y, cgame g) {
   }
 }
 
-// Game structure initialization
-/**
- * @brief set perameters in game structure
- * @param g the game
- * @param tab game color tab
- * @param init_tab game color tab to restart game
- * @param nbmax maximal movement at game
- * @param nbmovecur current movement in game
- * @param width width
- * @param height height
- * @param wrapping boolean for is wrapping or not
- * @pre @p g is a valid pointer toward a game structure
- **/
-void set_in_struct(game g, color* tab, color* init_tab, uint nbmax,
-                   uint nbmovecur, uint width, uint height, bool wrapping) {
-  g->cell = tab;
-  g->cell_init = init_tab;
-  g->nbmax = nbmax;
-  g->nbmovecur = nbmovecur;
-  g->width = width;
-  g->height = height;
-  g->wrapping = wrapping;
-}
 
 game game_new_empty_ext(uint width, uint height, bool wrapping) {
   // we allocate the memory for the game, the 1st and 2nd tabs
@@ -84,17 +88,27 @@ game game_new_empty_ext(uint width, uint height, bool wrapping) {
     fprintf(stderr, "Not enough memory for init_tab!\n");
     exit(EXIT_FAILURE);
   }
+  bool* tab_init = (bool*)malloc(height * width * sizeof(bool));
+  if (!t_init) {
+    free(t);
+    free(t_init);
+    free(new_empty_ext);
+    fprintf(stderr, "Not enough memory for tab_init!\n");
+    exit(EXIT_FAILURE);
+  }
+
   // we fill both tabs with the color "0"
   for (uint i = 0; i < height * width; i++) {
     t[i] = 0;
     t_init[i] = 0;
+    tab_init[i] = false;
   }
-  set_in_struct(new_empty_ext, t, t_init, 0, 0, width, height, wrapping);
+  tab_init[0] = true; //first is true
+  set_in_struct(new_empty_ext, t, t_init, 0, 0, width, height, wrapping, tab_init);
   return new_empty_ext;
 }
 
-game game_new_ext(uint width, uint height, color* cells, uint nb_moves_max,
-                  bool wrapping) {
+game game_new_ext(uint width, uint height, color* cells, uint nb_moves_max, bool wrapping) {
   test_pointer(cells);
   // we allocate the memory for the game
   game new_ext = (game)malloc(sizeof(struct game_s));
@@ -117,14 +131,25 @@ game game_new_ext(uint width, uint height, color* cells, uint nb_moves_max,
     fprintf(stderr, "Not enough memory for init_tab!\n");
     exit(EXIT_FAILURE);
   }
+  //we allocate the memory for the boolean tab
+  bool* tab_init = (bool*)malloc(height * width * sizeof(bool));
+  if (!t_init) {
+    free(t);
+    free(t_init);
+    free(new_ext);
+    fprintf(stderr, "Not enough memory for tab_init!\n");
+    exit(EXIT_FAILURE);
+  }
 
   // we fill both tabs with the given colors
-  for (uint i = 0; i < width * height; i++) {
+  for (uint i = 0; i < (width * height); i++) {
     t[i] = cells[i];
     t_init[i] = cells[i];
+    tab_init[i] = false;
   }
+  tab_init[0] = true;
   // we set the other parameters
-  set_in_struct(new_ext, t, t_init, nb_moves_max, 0, width, height, wrapping);
+  set_in_struct(new_ext, t, t_init, nb_moves_max, 0, width, height, wrapping, tab_init);
   // we return the game
   return new_ext;
 }
@@ -133,7 +158,9 @@ game game_new(color* cells, uint nb_moves_max) {
   return game_new_ext(SIZE, SIZE, cells, nb_moves_max, false);
 }
 
-game game_new_empty() { return game_new_empty_ext(SIZE, SIZE, false); }
+game game_new_empty() {
+  return game_new_empty_ext(SIZE, SIZE, false);
+}
 
 // Data recovery
 
@@ -210,8 +237,8 @@ void game_set_max_moves(game g, uint nb_max_moves) {
  * @pre @p x < game_width(g)
  * @pre @p y < game_height(g)
  **/
-void static game_color_neighbors(game g, color c_old, color c_new, uint x,
-                                 uint y) {
+
+void game_color_neighbors(game g, color c_old, color c_new, uint x, uint y) {
   test_game(g);
   test_coordinates(x, y, g);
   if (c_old == c_new) {
@@ -219,12 +246,12 @@ void static game_color_neighbors(game g, color c_old, color c_new, uint x,
     fprintf(stderr, "Unvalid color !\n");
     exit(EXIT_FAILURE);
   }
-
   // upper cell : (x,y-1)
   // if the coordinates of the upper neighbor are valid and it is the same color
   if (y >= 1 && game_cell_current_color(g, x, y - 1) == c_old) {
     // color the cell and call function on its neighbors
     g->cell[(y - 1) * game_width(g) + x] = c_new;
+    g->tab_bool[(y - 1) * game_width(g) + x] = true;
     game_color_neighbors(g, c_old, c_new, x, y - 1);
     // no need to worry about repeated neighbors because the old color is always
     // different from the new one
@@ -232,16 +259,19 @@ void static game_color_neighbors(game g, color c_old, color c_new, uint x,
   // lower cell : (x,y+1)
   if (y + 1 < game_height(g) && game_cell_current_color(g, x, y + 1) == c_old) {
     g->cell[(y + 1) * game_width(g) + x] = c_new;
+    g->tab_bool[(y + 1) * game_width(g) + x] = true;
     game_color_neighbors(g, c_old, c_new, x, y + 1);
   }
   // left cell : (x-1,y)
   if (x >= 1 && game_cell_current_color(g, x - 1, y) == c_old) {
     g->cell[y * game_width(g) + (x - 1)] = c_new;
+    g->tab_bool[y * game_width(g) + (x - 1)] = true;
     game_color_neighbors(g, c_old, c_new, x - 1, y);
   }
   // right cell : (x+1,y)
   if (x + 1 < game_width(g) && game_cell_current_color(g, x + 1, y) == c_old) {
     g->cell[y * game_width(g) + (x + 1)] = c_new;
+    g->tab_bool[y * game_width(g) + (x + 1)] = true;
     game_color_neighbors(g, c_old, c_new, x + 1, y);
   }
 
@@ -252,21 +282,25 @@ void static game_color_neighbors(game g, color c_old, color c_new, uint x,
     if (y == 0 && game_cell_current_color(g, x, game_height(g) - 1) == c_old) {
       // color the cell and call function on its neighbors
       g->cell[(game_height(g) - 1) * game_width(g) + x] = c_new;
+      g->tab_bool[(game_height(g) - 1) * game_width(g) + x] = true;
       game_color_neighbors(g, c_old, c_new, x, game_height(g) - 1);
     }
     // lower cell : (x,0) <=> x
     if (y == game_height(g) - 1 && game_cell_current_color(g, x, 0) == c_old) {
       g->cell[x] = c_new;
+      g->tab_bool[x] = true;
       game_color_neighbors(g, c_old, c_new, x, 0);
     }
     // left cell : (game_width(g)-1,y) <=> y*game_width(g)+game_width(g)-1
     if (x == 0 && game_cell_current_color(g, game_width(g) - 1, y) == c_old) {
       g->cell[y * game_width(g) + game_width(g) - 1] = c_new;
+      g->tab_bool[y * game_width(g) + game_width(g) - 1] = true;
       game_color_neighbors(g, c_old, c_new, game_width(g) - 1, y);
     }
     // right cell : (0,y) <=> y*game_width(g)
     if (x == game_width(g) - 1 && game_cell_current_color(g, 0, y) == c_old) {
       g->cell[y * game_width(g)] = c_new;
+      g->tab_bool[y * game_width(g)] = true;
       game_color_neighbors(g, c_old, c_new, 0, y);
     }
   }
@@ -298,6 +332,7 @@ game game_copy(cgame g) {
   for (uint i = 0; i < game_width(g) * game_height(g); i++) {
     copy->cell[i] = g->cell[i];
     copy->cell_init[i] = g->cell_init[i];
+    copy->tab_bool[i] = g->tab_bool[i];
   }
   copy->nbmax = g->nbmax;
   copy->nbmovecur = g->nbmovecur;
@@ -316,22 +351,27 @@ void game_delete(game g) {
     if (g->cell_init) {
       free(g->cell_init);
     }
+    if (g->tab_bool){
+      free(g->tab_bool);
+    }
     free(g);
   }
 }
 
 bool game_is_over(cgame g) {
   test_game(g);
+
+  // if the current number of moves is different from the maximum, the game is
+  // not over
+  if (g->nbmovecur > g->nbmax) return false;
+
   // we compare all of the cells colors with the color of the cell (0,0)
   color c = g->cell[0];
   for (uint i = 1; i < game_width(g) * game_height(g); i++) {
     // if one of the cells is different from the first one, the game is not over
     if (g->cell[i] != c) return false;
   }
-
-  // if the current number of moves is different from the maximum, the game is
-  // not over
-  if (g->nbmovecur > g->nbmax) return false;
+  
 
   // else the game is over
   return true;
@@ -342,7 +382,9 @@ void game_restart(game g) {
   // we set all the cells of the game to the initial colors
   for (uint i = 0; i < game_width(g) * game_height(g); i++) {
     g->cell[i] = g->cell_init[i];
+    g->tab_bool[i] = false;
   }
+  g->tab_bool[0] = true;
   // we reset the current number of moves
   g->nbmovecur = 0;
 }
