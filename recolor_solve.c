@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdbool.h> 
 #include <stdlib.h>
 #include <string.h>
 #include "game_io.c"
@@ -125,6 +126,19 @@ void solve_aux(game g, uint x, int *tabmove, char *filename ){
         free(tab);
         return;
     }*/
+    for (uint y=0; y<(g->width * g->height); y++){
+        if (g->tab_bool[y]==true){
+            printf("1");
+        }else{
+            printf("0");
+        }
+    }
+    printf("\n");
+    for (uint z=0; z<4; z++){
+        printf("%d", tabmove[z]);
+    }
+    printf("\n");
+    printf("%d\n", x);
     if (game_is_over(g)){
         write_solution(filename, tabmove, x);
         game_delete(g);
@@ -132,16 +146,20 @@ void solve_aux(game g, uint x, int *tabmove, char *filename ){
         free(tab);
         return;
     }else{
-        for (uint i = 0; i<4; i++){
-            if (tab[i]==true){
-                game copy =  game_copy(g);
-                game_play_one_move(copy,i);
-                tabmove[x]=i;
-                solve_aux(copy, x+1, tabmove, filename);
+        printf("%d\n",x);
+        if (x>(g->nbmax)){
+            game_delete(g);
+            free(tab);
+        }else{
+            for (uint i = 0; i<4; i++){
+                if (tab[i]==true){
+                    game copy =  game_copy(g);
+                    game_play_one_move(copy,i);
+                    tabmove[x]=i;
+                    solve_aux(copy, x+1, tabmove, filename);
+                }
             }
         }
-    game_delete(g);
-    free(tab);
     }
 }
 

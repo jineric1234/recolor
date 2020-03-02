@@ -199,6 +199,12 @@ color game_cell_current_color(cgame g, uint x, uint y) {
   return g->cell[y * game_width(g) + x];
 }
 
+bool game_cell_current_bool(cgame g, uint x) {
+  test_game(g);
+  // (x,y) <=> y*game_width(g)+x
+  return g->tab_bool[x];
+}
+
 // Set game parameters
 
 void game_set_cell_init(game g, uint x, uint y, color c) {

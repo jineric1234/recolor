@@ -46,6 +46,16 @@ void game_display(game g){
         }
         printf("\n");
     }
+    for (int x= 0; x < height * width; x++){
+        bool v = game_cell_current_bool(g, x);
+        if (v==true){
+            printf("1");
+        }else{
+            printf("0");
+        }
+        
+    }
+    printf("\n");
     if(nb_joues==0){
     printf("Jouer un coup: (0,1,2,3,r ou q ;  r pour redémarrer ou q pour quitter)\n");
     } else {
