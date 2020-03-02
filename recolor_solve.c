@@ -14,9 +14,10 @@ void write_solution(char *filename,int *tab, int size_tab){
         fprintf(stderr, "erreur pointeur null\n");
         exit(EXIT_FAILURE);
     }
-    FILE * f = fopen(filename,"w+");
+    FILE * f = fopen(filename,"w");
     for(uint i = 0; i<size_tab; i++){
         uint v = tab[i];
+        printf("%d",v);
         if (v>=0 && v<=9){fprintf(f,"%u ",v);}
         if (v==10){fprintf(f,"A ");}
         if (v==11){fprintf(f,"B ");}
@@ -25,7 +26,8 @@ void write_solution(char *filename,int *tab, int size_tab){
         if (v==14){fprintf(f,"E ");}
         if (v==15){fprintf(f,"F ");}
     }
-    fprintf(f,"\n");
+
+    printf("\n");
     fclose(f);
 }
 

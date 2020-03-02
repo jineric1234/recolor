@@ -23,9 +23,6 @@ game game_default(){
       2,0,2,3,0,1,1,1,2,3,0,1,
     };
     game dgame = game_new_ext(SIZE, SIZE, cell, 12, false);
-    color c = game_cell_current_color(dgame,0,0);
-    game_play_one_move(dgame,c);
-    first_play(dgame);
   return dgame;
 }
 
@@ -34,6 +31,9 @@ void game_display(game g){
     int nb_max = game_nb_moves_max(g);
     uint height = game_height(g);
     uint width = game_width(g);
+    color c = game_cell_current_color(g,0,0);
+    game_play_one_move(g,c);
+    first_play(g);
 
     printf("nb de coups joués : %d ; nb de coups max : %d \n", nb_joues, nb_max);
     for (int x= 0; x < height; x++){
@@ -56,7 +56,6 @@ void game_display(game g){
         }else{
             printf("0");
         }
-        
     }
     printf("\n");
     if(nb_joues==0){
