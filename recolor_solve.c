@@ -29,7 +29,6 @@ void write_solution(FILE *f,int *tab, int size_tab, int *x){
     }
     x[0]=1;
     fprintf(f,"\n");
-    printf("\n");
     
 }
 
@@ -46,8 +45,23 @@ void write_solution1(FILE *f,int *tab, int size_tab, int *x, int *a){
     }
     x[0]=size_tab;
     fprintf(f,"\n");
-    printf("\n");
+   
+}
+
+void write_solution2(FILE *f,int *tab, int size_tab, int *v, int *a, int *m){
+    if (tab==NULL || f==NULL){
+        fprintf(stderr, "erreur pointeur null\n");
+        exit(EXIT_FAILURE);
+    }
     
+    if (size_tab<=m[0]){
+        for(uint i = 0; i<size_tab; i++){
+            uint v = tab[i];
+            a[i]=v;
+        }
+        m[0]=size_tab;
+    }
+    v[0]=1;   
 }
 
 int* tab_move(int x) {
@@ -191,7 +205,7 @@ void solve_aux1(game g, uint x, int *tabmove, FILE *filename, uint z, int *v, in
         exit(EXIT_FAILURE);
     }
     else{
-        if (x>(g->nbmax)){
+        if (v[0]==1 || x>(g->nbmax)){
             game_delete(g);
             free(tab);
         }else{
@@ -212,6 +226,45 @@ void solve_aux1(game g, uint x, int *tabmove, FILE *filename, uint z, int *v, in
     game_delete(g);
 }
 
+void solve_aux2(game g, uint x, int *tabmove, FILE *filename, uint z, int *v, int*a, int *m){
+    if (x > (g->nbmax)){
+        game_delete(g);
+        free(tabmove);
+        return;
+    }
+    if (game_is_over(g)){
+        write_solution2(filename, tabmove, x, v, a, m);
+        game_delete(g);
+        free(tabmove);
+        return;
+    }
+    bool *tab = near_move(g,z);
+    if (tab==NULL){
+        fprintf(stderr,"tab NULL\n");
+        exit(EXIT_FAILURE);
+    }
+    else{
+        if (x>(g->nbmax)){
+            game_delete(g);
+            free(tab);
+        }else{
+            for (uint i = 0; i<z; i++){
+                if (tab[i]==true){
+                    game copy =  game_copy(g);
+                    game_play_one_move(copy,i);
+                    int* tabmove1= tab_move((g->nbmax));
+                    for (uint y=0; y<(g->nbmax); y++){
+                        tabmove1[y]=tabmove[y];
+                    }
+                    tabmove1[x]=i;
+                    solve_aux2(copy, x+1, tabmove1, filename, z, v, a, m);
+                }
+            }
+        }
+    }
+    game_delete(g);
+}
+
 void FIND_ONE (game g, char *filename) {
     FILE * f = fopen(filename,"w+");
     color c = game_cell_current_color(g,0,0);
@@ -219,7 +272,7 @@ void FIND_ONE (game g, char *filename) {
     int *a=(int*)malloc((g->nbmax)*sizeof(int));
     v[0]=0;
     game_play_one_move(g,c);
-    solve_aux1(g, 0, tab_move(g->nbmax), f, 10,v, a);
+    solve_aux1(g, 0, tab_move(g->nbmax), f, 16, v, a);
     fclose(f);
     if (v[0]==0){
         FILE * f = fopen(filename,"w+");
@@ -241,6 +294,7 @@ void FIND_ONE (game g, char *filename) {
         fclose(f);
     }
     free(v);
+    free(a);
 }
 
 void NB_SOL (game g, char *filename){
@@ -249,7 +303,7 @@ void NB_SOL (game g, char *filename){
     int *v=(int*)malloc(sizeof(int)*1);
     v[0]=0;
     game_play_one_move(g,c);
-    solve_aux(g, 0, tab_move(g->nbmax), f, 10,v);
+    solve_aux(g, 0, tab_move(g->nbmax), f, 16,v);
     fclose(f);
     if (v[0]==0){
         FILE * f = fopen(filename,"w+");
@@ -263,11 +317,36 @@ void NB_SOL (game g, char *filename){
 
 void FIND_MIN (game g, char*filename) {
     FILE * f = fopen(filename,"w+");
-
-    fprintf(f, "FM");
+    color c = game_cell_current_color(g,0,0);
+    int *v=(int*)malloc(sizeof(int)*1);
+    int *m=(int*)malloc(sizeof(int)*1);
+    m[0]=g->nbmax;
+    int *a=(int*)malloc((g->nbmax)*sizeof(int));
+    v[0]=0;
+    game_play_one_move(g,c);
+    solve_aux2(g, 0, tab_move(g->nbmax), f, 16, v, a, m);
     fclose(f);
+    if (v[0]==0){
+        FILE * f = fopen(filename,"w+");
+        fprintf(f, "NO SOLUTION");
+        fclose(f);
+    }else{
+        FILE * f = fopen(filename,"w+");
+        for(uint i = 0; i<m[0]; i++){
+            uint v = a[i];
+            if (v>=0 && v<=9){fprintf(f,"%u ",v);}
+            if (v==10){fprintf(f,"A ");}
+            if (v==11){fprintf(f,"B ");}
+            if (v==12){fprintf(f,"C ");}
+            if (v==13){fprintf(f,"D ");}
+            if (v==14){fprintf(f,"E ");}
+            if (v==15){fprintf(f,"F ");}
+        }
+        fclose(f);
+    }
+    free(v);
+    free(a);
 }
-
 
 int main(int argc, char *argv[]){
     if(argc==4){
