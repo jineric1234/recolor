@@ -9,12 +9,24 @@
 #include "game.h"
 #include "game.c"
 
-void write_solution(char *filename,int *tab, int size_tab){
-    if (tab==NULL || filename==NULL){
+int testSiFichierVide(FILE* fichier){
+    int caracterePremier = 0;
+ 
+    //On lit le prmeier caractère du fichier
+    caracterePremier = fgetc(fichier);
+    if(caracterePremier==EOF)
+    {
+        return 1;//le fichier est vide donc on retourne 1
+    }
+    return 0;//le fichier n'est pas vide donc on retourne 0
+}
+
+void write_solution(FILE *f,int *tab, int size_tab){
+    if (tab==NULL || f==NULL){
         fprintf(stderr, "erreur pointeur null\n");
         exit(EXIT_FAILURE);
     }
-    FILE * f = fopen(filename,"a");
+    
     for(uint i = 0; i<size_tab; i++){
         uint v = tab[i];
         printf("%d",v);
@@ -28,7 +40,7 @@ void write_solution(char *filename,int *tab, int size_tab){
     }
     fprintf(f,"\n");
     printf("\n");
-    fclose(f);
+    
 }
 
 int* tab_move(int x) {
@@ -52,12 +64,12 @@ bool* tab_bool1(int x) {
     return tab;
 }
 
-bool* near_move(game g){
+bool* near_move(game g, uint z){
     if(g==NULL){
         fprintf(stderr,"game NULL\n");
         exit(EXIT_FAILURE);
     }
-    bool *tab = tab_bool1(4);
+    bool *tab = tab_bool1(z);
     uint height = g->height;
     uint width = g->width;
     for (uint i=0; i<(height * width); i++){
@@ -116,16 +128,20 @@ bool* near_move(game g){
 }
 
 
-void solve_aux(game g, uint x, int *tabmove, char *filename ){
+
+void solve_aux(game g, uint x, int *tabmove, FILE *filename, uint z ){
     if (x > (g->nbmax)){
+        game_delete(g);
+        free(tabmove);
         return;
     }
     if (game_is_over(g)){
         write_solution(filename, tabmove, x);
         game_delete(g);
+        free(tabmove);
         return;
     }
-    bool *tab = near_move(g);
+    bool *tab = near_move(g,z);
     if (tab==NULL){
         fprintf(stderr,"tab NULL\n");
         exit(EXIT_FAILURE);
@@ -135,16 +151,21 @@ void solve_aux(game g, uint x, int *tabmove, char *filename ){
             game_delete(g);
             free(tab);
         }else{
-            for (uint i = 0; i<4; i++){
+            for (uint i = 0; i<z; i++){
                 if (tab[i]==true){
                     game copy =  game_copy(g);
                     game_play_one_move(copy,i);
-                    tabmove[x]=i;
-                    solve_aux(copy, x+1, tabmove, filename);
+                    int* tabmove1= tab_move((g->nbmax));
+                    for (uint y=0; y<(g->nbmax); y++){
+                        tabmove1[y]=tabmove[y];
+                    }
+                    tabmove1[x]=i;
+                    solve_aux(copy, x+1, tabmove1, filename, z);
                 }
             }
         }
     }
+    game_delete(g);
 }
 
 void FIND_ONE (game g, char *filename) {
@@ -154,7 +175,18 @@ void FIND_ONE (game g, char *filename) {
 }
 
 void NB_SOL (game g, char *filename) {
-    solve_aux(g, 0, tab_move(g->nbmax), filename);
+    FILE * f = fopen(filename,"w+");
+    color c = game_cell_current_color(g,0,0);
+    game_play_one_move(g,c);
+    solve_aux(g, 0, tab_move(g->nbmax), f, 10);
+    fclose(f);
+    uint v = testSiFichierVide(f);
+    if (v==1){
+        FILE * f = fopen(filename,"w+");
+        fprintf(f,"NO SOLUTION");
+        fclose(f);
+    }
+    
     return;
 }
 

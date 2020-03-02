@@ -10,7 +10,7 @@ struct game_s {
   color* cell_init;  // tab with the initial colors
   bool* tab_bool;    // tab with the changed zone
   uint nbmax;
-  uint nbmovecur;
+  int nbmovecur;
   uint width;
   uint height;
   bool wrapping;
@@ -199,12 +199,6 @@ color game_cell_current_color(cgame g, uint x, uint y) {
   return g->cell[y * game_width(g) + x];
 }
 
-bool game_cell_current_bool(cgame g, uint x) {
-  test_game(g);
-  // (x,y) <=> y*game_width(g)+x
-  return g->tab_bool[x];
-}
-
 // Set game parameters
 
 void game_set_cell_init(game g, uint x, uint y, color c) {
@@ -215,10 +209,6 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   g->cell_init[y * game_width(g) + x] = c;
   g->cell[y * game_width(g) + x] = c;
   return;
-}
-
-void first_play(game g){
-  g->nbmovecur--;
 }
 
 void game_set_max_moves(game g, uint nb_max_moves) {
@@ -315,6 +305,9 @@ void game_color_neighbors(game g, color c_new, uint x, uint y) {
 void game_play_one_move(game g, color c) {
   test_game(g);
     // we color the first cell (0,0) and its neighbors
+    if (g->nbmovecur==0){
+      g->nbmovecur--;
+    }
   for (uint i=1; i< (g->height * g->width); i++){
     if (g->tab_bool[i]==true){
       g->tab_bool[i]=false;

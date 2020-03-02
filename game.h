@@ -146,15 +146,6 @@ uint game_nb_moves_max(cgame g);
  **/
 color game_cell_current_color(cgame g, uint x, uint y);
 
-/**
- * @brief Gets the color of the cell located at given coordinates.
- * @param g the game
- * @param x the first coordinate of the cell
- * @return the color of the cell
- * @pre @p g is a valid pointer toward a cgame structure
- * @pre @p x < SIZE
- **/
-bool game_cell_current_bool(cgame g, uint x);
 
 /**
  * @brief Gets the number of moves since the last start (or restart).
@@ -206,14 +197,6 @@ bool game_is_over(cgame g);
  * @pre @p g is a valid pointer toward a game structure
  **/
 void game_restart(game g);
-
-/**
- * @brief Restarts a game by resetting the colors of the cells to their
- * initial value and by setting the current number of moves to 0.
- * @param g the game to restart
- * @pre @p g is a valid pointer toward a game structure
- **/
-void first_play(game g);
 
 ///////////////////////// V2 /////////////////////////
 
