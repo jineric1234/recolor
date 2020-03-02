@@ -27,7 +27,6 @@ void write_solution(char *filename,int *tab, int size_tab){
  **/
 int* tab_move(int x);
 
-
 /**
  * @brief true if..
  * @param x 
