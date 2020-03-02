@@ -217,6 +217,10 @@ void game_set_cell_init(game g, uint x, uint y, color c) {
   return;
 }
 
+void first_play(game g){
+  g->nbmovecur--;
+}
+
 void game_set_max_moves(game g, uint nb_max_moves) {
   test_game(g);
   if (nb_max_moves < 1) {
@@ -244,70 +248,65 @@ void game_set_max_moves(game g, uint nb_max_moves) {
  * @pre @p y < game_height(g)
  **/
 
-void game_color_neighbors(game g, color c_old, color c_new, uint x, uint y) {
+void game_color_neighbors(game g, color c_new, uint x, uint y) {
   test_game(g);
   test_coordinates(x, y, g);
-  if (c_old == c_new) {
-    game_delete(g);
-    fprintf(stderr, "Unvalid color !\n");
-    exit(EXIT_FAILURE);
-  }
+
   // upper cell : (x,y-1)
   // if the coordinates of the upper neighbor are valid and it is the same color
-  if (y >= 1 && game_cell_current_color(g, x, y - 1) == c_old) {
+  if (y >= 1 && !g->tab_bool[(y - 1) * game_width(g) + x] && game_cell_current_color(g, x, y - 1) == c_new) {
     // color the cell and call function on its neighbors
     g->cell[(y - 1) * game_width(g) + x] = c_new;
     g->tab_bool[(y - 1) * game_width(g) + x] = true;
-    game_color_neighbors(g, c_old, c_new, x, y - 1);
+    game_color_neighbors(g, c_new, x, y - 1);
     // no need to worry about repeated neighbors because the old color is always
     // different from the new one
   }
   // lower cell : (x,y+1)
-  if (y + 1 < game_height(g) && game_cell_current_color(g, x, y + 1) == c_old) {
+  if (y + 1 < game_height(g) && !g->tab_bool[(y + 1) * game_width(g) + x] && game_cell_current_color(g, x, y + 1) == c_new) {
     g->cell[(y + 1) * game_width(g) + x] = c_new;
     g->tab_bool[(y + 1) * game_width(g) + x] = true;
-    game_color_neighbors(g, c_old, c_new, x, y + 1);
+    game_color_neighbors(g, c_new, x, y + 1);
   }
   // left cell : (x-1,y)
-  if (x >= 1 && game_cell_current_color(g, x - 1, y) == c_old) {
+  if (x >= 1 && !g->tab_bool[y * game_width(g) + (x - 1)] && game_cell_current_color(g, x - 1, y) == c_new) {
     g->cell[y * game_width(g) + (x - 1)] = c_new;
     g->tab_bool[y * game_width(g) + (x - 1)] = true;
-    game_color_neighbors(g, c_old, c_new, x - 1, y);
+    game_color_neighbors(g, c_new, x - 1, y);
   }
   // right cell : (x+1,y)
-  if (x + 1 < game_width(g) && game_cell_current_color(g, x + 1, y) == c_old) {
+  if (x + 1 < game_width(g) && !g->tab_bool[y * game_width(g) + (x + 1)] && game_cell_current_color(g, x + 1, y) == c_new) {
     g->cell[y * game_width(g) + (x + 1)] = c_new;
     g->tab_bool[y * game_width(g) + (x + 1)] = true;
-    game_color_neighbors(g, c_old, c_new, x + 1, y);
+    game_color_neighbors(g, c_new, x + 1, y);
   }
-
   // if the game is wrapping, we check the other neighbors too
   if (game_is_wrapping(g)) {
     // (x,y) <=> y*game_width(g)+x
     // upper cell : (x,game_height(g)-1) <=> (game_height(g)-1)*game_width(g)+x
-    if (y == 0 && game_cell_current_color(g, x, game_height(g) - 1) == c_old) {
+    if (y == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, game_height(g) - 1) == c_new) {
       // color the cell and call function on its neighbors
       g->cell[(game_height(g) - 1) * game_width(g) + x] = c_new;
       g->tab_bool[(game_height(g) - 1) * game_width(g) + x] = true;
-      game_color_neighbors(g, c_old, c_new, x, game_height(g) - 1);
+      game_color_neighbors(g, c_new, x, game_height(g) - 1);
     }
     // lower cell : (x,0) <=> x
-    if (y == game_height(g) - 1 && game_cell_current_color(g, x, 0) == c_old) {
+    if (y == game_height(g) - 1 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, 0) == c_new) {
       g->cell[x] = c_new;
       g->tab_bool[x] = true;
-      game_color_neighbors(g, c_old, c_new, x, 0);
+      game_color_neighbors(g, c_new, x, 0);
     }
     // left cell : (game_width(g)-1,y) <=> y*game_width(g)+game_width(g)-1
-    if (x == 0 && game_cell_current_color(g, game_width(g) - 1, y) == c_old) {
+    if (x == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, game_width(g) - 1, y) == c_new) {
       g->cell[y * game_width(g) + game_width(g) - 1] = c_new;
       g->tab_bool[y * game_width(g) + game_width(g) - 1] = true;
-      game_color_neighbors(g, c_old, c_new, game_width(g) - 1, y);
+      game_color_neighbors(g, c_new, game_width(g) - 1, y);
     }
     // right cell : (0,y) <=> y*game_width(g)
-    if (x == game_width(g) - 1 && game_cell_current_color(g, 0, y) == c_old) {
+    if (x == game_width(g) - 1 && !g->tab_bool[y*game_width(g)+x] &&  game_cell_current_color(g, 0, y) == c_new) {
       g->cell[y * game_width(g)] = c_new;
       g->tab_bool[y * game_width(g)] = true;
-      game_color_neighbors(g, c_old, c_new, 0, y);
+      game_color_neighbors(g, c_new, 0, y);
     }
   }
   return;
@@ -315,14 +314,15 @@ void game_color_neighbors(game g, color c_old, color c_new, uint x, uint y) {
 
 void game_play_one_move(game g, color c) {
   test_game(g);
-  // we get the old color of the first cell
-  color old_color = g->cell[0];
-  // if the old and the new color are the same, we don't do anything
-  if (old_color != c) {
     // we color the first cell (0,0) and its neighbors
-    g->cell[0] = c;
-    game_color_neighbors(g, old_color, c, 0, 0);
+  for (uint i=1; i< (g->height * g->width); i++){
+    if (g->tab_bool[i]==true){
+      g->tab_bool[i]=false;
+      g->cell[i]=c;
+    }
+    g->cell[0]=c;
   }
+  game_color_neighbors(g, c, 0, 0);
   g->nbmovecur++;
   return;
 }

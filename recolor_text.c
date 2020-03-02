@@ -8,7 +8,7 @@
 #include "game_io.h"
 
 game game_default(){
-    color cell[] = 
+    color cell[] =
     { 0,0,0,2,0,2,1,0,1,0,3,0,
       0,3,3,1,1,1,1,3,2,0,1,0,
       1,0,1,2,3,2,3,2,0,3,3,2,
@@ -19,10 +19,13 @@ game game_default(){
       1,3,1,3,1,0,1,0,1,3,3,3,
       0,3,0,1,0,0,2,1,1,1,3,0,
       1,3,1,0,0,0,3,2,3,1,0,0,
-      1,3,3,1,1,2,2,3,2,0,0,2,      
+      1,3,3,1,1,2,2,3,2,0,0,2,
       2,0,2,3,0,1,1,1,2,3,0,1,
     };
-  game dgame = game_new_ext(SIZE, SIZE, cell, 12, false);
+    game dgame = game_new_ext(SIZE, SIZE, cell, 12, false);
+    color c = game_cell_current_color(dgame,0,0);
+    game_play_one_move(dgame,c);
+    first_play(dgame);
   return dgame;
 }
 
@@ -35,7 +38,7 @@ void game_display(game g){
     printf("nb de coups joués : %d ; nb de coups max : %d \n", nb_joues, nb_max);
     for (int x= 0; x < height; x++){
         for(int y= 0; y < width; y++){
-            int v = game_cell_current_color(g, x, y);
+            int v = game_cell_current_color(g, y, x);
             if (v>=0 && v<=9){printf("%d",v);}
             if (v==65 || v==10){printf("A");}
             if (v==66 || v==11){printf("B");}

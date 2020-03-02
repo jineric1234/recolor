@@ -207,6 +207,14 @@ bool game_is_over(cgame g);
  **/
 void game_restart(game g);
 
+/**
+ * @brief Restarts a game by resetting the colors of the cells to their
+ * initial value and by setting the current number of moves to 0.
+ * @param g the game to restart
+ * @pre @p g is a valid pointer toward a game structure
+ **/
+void first_play(game g);
+
 ///////////////////////// V2 /////////////////////////
 
 /**
