@@ -31,7 +31,7 @@ struct game_s {
  * @pre @p g is a valid pointer toward a game structure
  **/
 void set_in_struct(game g, color* cell, color* cell_init, uint nbmax,
-       uint nbmovecur, uint width, uint height, bool wrapping, bool* t_bool) {
+       int nbmovecur, uint width, uint height, bool wrapping, bool* t_bool) {
   g->cell = cell;
   g->cell_init = cell_init;
   g->nbmax = nbmax;
@@ -104,7 +104,7 @@ game game_new_empty_ext(uint width, uint height, bool wrapping) {
     tab_init[i] = false;
   }
   tab_init[0] = true; //first is true
-  set_in_struct(new_empty_ext, t, t_init, 0, 0, width, height, wrapping, tab_init);
+  set_in_struct(new_empty_ext, t, t_init, 0, -1, width, height, wrapping, tab_init);
   return new_empty_ext;
 }
 
@@ -149,7 +149,7 @@ game game_new_ext(uint width, uint height, color* cells, uint nb_moves_max, bool
   }
   tab_init[0] = true;
   // we set the other parameters
-  set_in_struct(new_ext, t, t_init, nb_moves_max, 0, width, height, wrapping, tab_init);
+  set_in_struct(new_ext, t, t_init, nb_moves_max, -1, width, height, wrapping, tab_init);
   // we return the game
   return new_ext;
 }
@@ -305,9 +305,6 @@ void game_color_neighbors(game g, color c_new, uint x, uint y) {
 void game_play_one_move(game g, color c) {
   test_game(g);
     // we color the first cell (0,0) and its neighbors
-    if (g->nbmovecur==0){
-      g->nbmovecur--;
-    }
   for (uint i=1; i< (g->height * g->width); i++){
     if (g->tab_bool[i]==true){
       g->tab_bool[i]=false;
@@ -385,5 +382,5 @@ void game_restart(game g) {
   }
   g->tab_bool[0] = true;
   // we reset the current number of moves
-  g->nbmovecur = 0;
+  g->nbmovecur = -1;
 }

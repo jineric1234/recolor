@@ -33,8 +33,6 @@ void game_display(game g){
     int nb_max = game_nb_moves_max(g);
     uint height = game_height(g);
     uint width = game_width(g);
-    color c = game_cell_current_color(g,0,0);
-    game_play_one_move(g,c);
 
     printf("nb de coups joués : %d ; nb de coups max : %d \n", nb_joues, nb_max);
     for (int x= 0; x < height; x++){
