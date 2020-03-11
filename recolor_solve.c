@@ -215,11 +215,9 @@ void solve_aux2(game g, uint x, int *tabmove, uint z, int *v, int*a, int *m){
 }
 
 void FIND_ONE (game g, char *filename) {
-    color c = game_cell_current_color(g,0,0);
     int *v=(int*)malloc(sizeof(int)*1); //tab to know if found solution
     int *a=(int*)malloc((g->nbmax)*sizeof(int)); //tab with solution
     v[0]=0;
-    game_play_one_move(g,c);
     int z= couleur_tab(g) + 1; //number of differents colors
     solve_aux1(g, 0, tab_move(g->nbmax), z, v, a);
     if (v[0]==0){
@@ -246,8 +244,6 @@ void FIND_ONE (game g, char *filename) {
 }
 
 void NB_SOL (game g, char *filename){
-    color c = game_cell_current_color(g,0,0);
-    game_play_one_move(g,c);
     int *v=(int*)malloc(sizeof(int));
     int m= couleur_tab(g) + 1;
     v[0]=0;
@@ -270,8 +266,6 @@ void FIND_MIN (game g, char*filename) {
     int *a=(int*)malloc((g->nbmax)*sizeof(int)); //tab with the final solution
     m[0]=g->nbmax + 1;
     v[0]=0;
-    color c = game_cell_current_color(g,0,0);
-    game_play_one_move(g,c);
     int* tabmove = tab_move(g->nbmax);
     int b= couleur_tab(g) + 1;
     solve_aux2(g, 0, tabmove, b, v, a, m);
@@ -318,3 +312,4 @@ int main(int argc, char *argv[]){
         }
     }
 }
+

@@ -10,7 +10,7 @@ struct game_s {
   color* cell_init;  // tab with the initial colors
   bool* tab_bool;    // tab with the changed zone
   uint nbmax;
-  int nbmovecur;
+  uint nbmovecur;
   uint width;
   uint height;
   bool wrapping;
@@ -30,16 +30,13 @@ struct game_s {
  * @param wrapping boolean for is wrapping or not
  * @pre @p g is a valid pointer toward a game structure
  **/
-void set_in_struct(game g, color* cell, color* cell_init, uint nbmax,
-       int nbmovecur, uint width, uint height, bool wrapping, bool* t_bool) {
-  g->cell = cell;
-  g->cell_init = cell_init;
-  g->nbmax = nbmax;
-  g->nbmovecur = nbmovecur;
-  g->width = width;
-  g->height = height;
-  g->wrapping = wrapping;
-  g->tab_bool = t_bool;
+
+void static test_coordinates(uint x, uint y, cgame g) {
+  if (x >= game_width(g) || y >= game_height(g)) {
+    game_delete((struct game_s*)g);
+    fprintf(stderr, "Unvalid coordinates !\n");
+    exit(EXIT_FAILURE);
+  }
 }
 
 // Error detection
@@ -59,14 +56,82 @@ void static test_game(cgame game) {
   }
 }
 
-void static test_coordinates(uint x, uint y, cgame g) {
-  if (x >= game_width(g) || y >= game_height(g)) {
-    game_delete((struct game_s*)g);
-    fprintf(stderr, "Unvalid coordinates !\n");
-    exit(EXIT_FAILURE);
+void game_color_neighbors(game g, color c_new, uint x, uint y) {
+  test_game(g);
+  test_coordinates(x, y, g);
+
+  // upper cell : (x,y-1)
+  // if the coordinates of the upper neighbor are valid and it is the same color
+  if (y >= 1 && !g->tab_bool[(y - 1) * game_width(g) + x] && game_cell_current_color(g, x, y - 1) == c_new) {
+    // color the cell and call function on its neighbors
+    g->cell[(y - 1) * game_width(g) + x] = c_new;
+    g->tab_bool[(y - 1) * game_width(g) + x] = true;
+    game_color_neighbors(g, c_new, x, y - 1);
+    // no need to worry about repeated neighbors because the old color is always
+    // different from the new one
   }
+  // lower cell : (x,y+1)
+  if (y + 1 < game_height(g) && !g->tab_bool[(y + 1) * game_width(g) + x] && game_cell_current_color(g, x, y + 1) == c_new) {
+    g->cell[(y + 1) * game_width(g) + x] = c_new;
+    g->tab_bool[(y + 1) * game_width(g) + x] = true;
+    game_color_neighbors(g, c_new, x, y + 1);
+  }
+  // left cell : (x-1,y)
+  if (x >= 1 && !g->tab_bool[y * game_width(g) + (x - 1)] && game_cell_current_color(g, x - 1, y) == c_new) {
+    g->cell[y * game_width(g) + (x - 1)] = c_new;
+    g->tab_bool[y * game_width(g) + (x - 1)] = true;
+    game_color_neighbors(g, c_new, x - 1, y);
+  }
+  // right cell : (x+1,y)
+  if (x + 1 < game_width(g) && !g->tab_bool[y * game_width(g) + (x + 1)] && game_cell_current_color(g, x + 1, y) == c_new) {
+    g->cell[y * game_width(g) + (x + 1)] = c_new;
+    g->tab_bool[y * game_width(g) + (x + 1)] = true;
+    game_color_neighbors(g, c_new, x + 1, y);
+  }
+  // if the game is wrapping, we check the other neighbors too
+  if (game_is_wrapping(g)) {
+    // (x,y) <=> y*game_width(g)+x
+    // upper cell : (x,game_height(g)-1) <=> (game_height(g)-1)*game_width(g)+x
+    if (y == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, game_height(g) - 1) == c_new) {
+      // color the cell and call function on its neighbors
+      g->cell[(game_height(g) - 1) * game_width(g) + x] = c_new;
+      g->tab_bool[(game_height(g) - 1) * game_width(g) + x] = true;
+      game_color_neighbors(g, c_new, x, game_height(g) - 1);
+    }
+    // lower cell : (x,0) <=> x
+    if (y == game_height(g) - 1 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, 0) == c_new) {
+      g->cell[x] = c_new;
+      g->tab_bool[x] = true;
+      game_color_neighbors(g, c_new, x, 0);
+    }
+    // left cell : (game_width(g)-1,y) <=> y*game_width(g)+game_width(g)-1
+    if (x == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, game_width(g) - 1, y) == c_new) {
+      g->cell[y * game_width(g) + game_width(g) - 1] = c_new;
+      g->tab_bool[y * game_width(g) + game_width(g) - 1] = true;
+      game_color_neighbors(g, c_new, game_width(g) - 1, y);
+    }
+    // right cell : (0,y) <=> y*game_width(g)
+    if (x == game_width(g) - 1 && !g->tab_bool[y*game_width(g)+x] &&  game_cell_current_color(g, 0, y) == c_new) {
+      g->cell[y * game_width(g)] = c_new;
+      g->tab_bool[y * game_width(g)] = true;
+      game_color_neighbors(g, c_new, 0, y);
+    }
+  }
+  return;
 }
 
+void set_in_struct(game g, color* cell, color* cell_init, uint nbmax,
+       int nbmovecur, uint width, uint height, bool wrapping, bool* t_bool) {
+
+  g->cell = cell;
+  g->cell_init = cell_init;
+  g->nbmax = nbmax;
+  g->nbmovecur = nbmovecur;
+  g->width = width;
+  g->height = height;
+  g->wrapping = wrapping;
+  g->tab_bool = t_bool;
+}
 
 game game_new_empty_ext(uint width, uint height, bool wrapping) {
   // we allocate the memory for the game, the 1st and 2nd tabs
@@ -104,7 +169,7 @@ game game_new_empty_ext(uint width, uint height, bool wrapping) {
     tab_init[i] = false;
   }
   tab_init[0] = true; //first is true
-  set_in_struct(new_empty_ext, t, t_init, 0, -1, width, height, wrapping, tab_init);
+  set_in_struct(new_empty_ext, t, t_init, 0, 0, width, height, wrapping, tab_init);
   return new_empty_ext;
 }
 
@@ -149,7 +214,11 @@ game game_new_ext(uint width, uint height, color* cells, uint nb_moves_max, bool
   }
   tab_init[0] = true;
   // we set the other parameters
-  set_in_struct(new_ext, t, t_init, nb_moves_max, -1, width, height, wrapping, tab_init);
+  set_in_struct(new_ext, t, t_init, nb_moves_max, 0, width, height, wrapping, tab_init);
+  if (new_ext->nbmovecur==0){
+    int v = new_ext->cell[0];
+    game_color_neighbors(new_ext,v,0,0);
+  }
   // we return the game
   return new_ext;
 }
@@ -238,69 +307,7 @@ void game_set_max_moves(game g, uint nb_max_moves) {
  * @pre @p y < game_height(g)
  **/
 
-void game_color_neighbors(game g, color c_new, uint x, uint y) {
-  test_game(g);
-  test_coordinates(x, y, g);
 
-  // upper cell : (x,y-1)
-  // if the coordinates of the upper neighbor are valid and it is the same color
-  if (y >= 1 && !g->tab_bool[(y - 1) * game_width(g) + x] && game_cell_current_color(g, x, y - 1) == c_new) {
-    // color the cell and call function on its neighbors
-    g->cell[(y - 1) * game_width(g) + x] = c_new;
-    g->tab_bool[(y - 1) * game_width(g) + x] = true;
-    game_color_neighbors(g, c_new, x, y - 1);
-    // no need to worry about repeated neighbors because the old color is always
-    // different from the new one
-  }
-  // lower cell : (x,y+1)
-  if (y + 1 < game_height(g) && !g->tab_bool[(y + 1) * game_width(g) + x] && game_cell_current_color(g, x, y + 1) == c_new) {
-    g->cell[(y + 1) * game_width(g) + x] = c_new;
-    g->tab_bool[(y + 1) * game_width(g) + x] = true;
-    game_color_neighbors(g, c_new, x, y + 1);
-  }
-  // left cell : (x-1,y)
-  if (x >= 1 && !g->tab_bool[y * game_width(g) + (x - 1)] && game_cell_current_color(g, x - 1, y) == c_new) {
-    g->cell[y * game_width(g) + (x - 1)] = c_new;
-    g->tab_bool[y * game_width(g) + (x - 1)] = true;
-    game_color_neighbors(g, c_new, x - 1, y);
-  }
-  // right cell : (x+1,y)
-  if (x + 1 < game_width(g) && !g->tab_bool[y * game_width(g) + (x + 1)] && game_cell_current_color(g, x + 1, y) == c_new) {
-    g->cell[y * game_width(g) + (x + 1)] = c_new;
-    g->tab_bool[y * game_width(g) + (x + 1)] = true;
-    game_color_neighbors(g, c_new, x + 1, y);
-  }
-  // if the game is wrapping, we check the other neighbors too
-  if (game_is_wrapping(g)) {
-    // (x,y) <=> y*game_width(g)+x
-    // upper cell : (x,game_height(g)-1) <=> (game_height(g)-1)*game_width(g)+x
-    if (y == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, game_height(g) - 1) == c_new) {
-      // color the cell and call function on its neighbors
-      g->cell[(game_height(g) - 1) * game_width(g) + x] = c_new;
-      g->tab_bool[(game_height(g) - 1) * game_width(g) + x] = true;
-      game_color_neighbors(g, c_new, x, game_height(g) - 1);
-    }
-    // lower cell : (x,0) <=> x
-    if (y == game_height(g) - 1 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, 0) == c_new) {
-      g->cell[x] = c_new;
-      g->tab_bool[x] = true;
-      game_color_neighbors(g, c_new, x, 0);
-    }
-    // left cell : (game_width(g)-1,y) <=> y*game_width(g)+game_width(g)-1
-    if (x == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, game_width(g) - 1, y) == c_new) {
-      g->cell[y * game_width(g) + game_width(g) - 1] = c_new;
-      g->tab_bool[y * game_width(g) + game_width(g) - 1] = true;
-      game_color_neighbors(g, c_new, game_width(g) - 1, y);
-    }
-    // right cell : (0,y) <=> y*game_width(g)
-    if (x == game_width(g) - 1 && !g->tab_bool[y*game_width(g)+x] &&  game_cell_current_color(g, 0, y) == c_new) {
-      g->cell[y * game_width(g)] = c_new;
-      g->tab_bool[y * game_width(g)] = true;
-      game_color_neighbors(g, c_new, 0, y);
-    }
-  }
-  return;
-}
 
 void game_play_one_move(game g, color c) {
   test_game(g);
@@ -382,5 +389,5 @@ void game_restart(game g) {
   }
   g->tab_bool[0] = true;
   // we reset the current number of moves
-  g->nbmovecur = -1;
+  g->nbmovecur = 0;
 }

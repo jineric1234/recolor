@@ -23,8 +23,6 @@ game game_default(){
       2,0,2,3,0,1,1,1,2,3,0,1,
     };
     game dgame = game_new_ext(SIZE, SIZE, cell, 12, false);
-    color c = game_cell_current_color(dgame,0,0);
-    game_play_one_move(dgame,c);
   return dgame;
 }
 
@@ -129,10 +127,9 @@ int main(int argc, char *argv[]){
         game g = game_default();
         play_recolor(g);
     }
-    else { 
+    else {
         game g = game_load(argv[1]);
         play_recolor(g);
-   
     }
 }
 
