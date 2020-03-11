@@ -22,18 +22,15 @@ int couleur_tab(game g){
     return v;
 }
 
-void write_solution1(FILE *f,int *tab, int size_tab, int *x, int *a){
-    if (tab==NULL || f==NULL){
+void write_solution1(int *tab, int size_tab, int *v, int *a){
+    if (tab==NULL){
         fprintf(stderr, "erreur pointeur null\n");
         exit(EXIT_FAILURE);
     }
     for(uint i = 0; i<size_tab; i++){
-        uint v = tab[i];
-        a[i]=v;
-
+        a[i]=tab[i];
     }
-    x[0]=size_tab;
-    fprintf(f,"\n");
+    v[0]=size_tab;
 }
 
 void write_solution2(int *tab, int size_tab, int *v, int *a, int *m){
@@ -135,15 +132,14 @@ bool* near_move(game g, uint z){
     return tab;
 }
 
-void solve_aux(game g, uint x, int *tabmove, uint z, int *v){
+void solve_aux(game g, uint x, uint z, int *v){
     if (game_is_over(g)){
         game_delete(g);
         v[0]=v[0]+1;
     }
-    else{
-        if (x > (g->nbmax)){
-            game_delete(g);
-        }
+    else if (x > (g->nbmax)){
+        game_delete(g);
+    }else{
         bool *tab = near_move(g,z);
         if (tab==NULL){
             fprintf(stderr,"tab NULL\n");
@@ -153,52 +149,45 @@ void solve_aux(game g, uint x, int *tabmove, uint z, int *v){
             if (tab[i]==true){
                 game copy =  game_copy(g);
                 game_play_one_move(copy,i);
-                tabmove[x]=i;
-                solve_aux(copy, x+1, tabmove, z, v);
+                solve_aux(copy, x+1, z, v);
             }
         }
+    free(tab);
     }
 }
 
-void solve_aux1(game g, uint x, int *tabmove, FILE *filename, uint z, int *v, int*a){
-    if (x > (g->nbmax)){
+void solve_aux1(game g, uint x, int *tabmove, uint z, int *v, int*a){
+    if (v[0]>=1){
         game_delete(g);
-        return;
     }
-    if (game_is_over(g)){
-        write_solution1(filename, tabmove, x, v, a);
+    else if (game_is_over(g)){
+        write_solution1(tabmove, x, v, a);
         game_delete(g);
-        return;
-    }
-    bool *tab = near_move(g,z);
-    if (tab==NULL){
-        fprintf(stderr,"tab NULL\n");
-        exit(EXIT_FAILURE);
     }
     else{
-        if (v[0]==1 || x>(g->nbmax)){
+        bool *tab = near_move(g,z);
+        if (tab==NULL){
+            fprintf(stderr,"tab NULL\n");
+            exit(EXIT_FAILURE);
+        }
+        else if (x > (g->nbmax)){
             game_delete(g);
-            free(tab);
         }else{
             for (uint i = 0; i<z; i++){
                 if (tab[i]==true){
                     game copy =  game_copy(g);
                     game_play_one_move(copy,i);
-                    int* tabmove1= tab_move((g->nbmax));
-                    for (uint y=0; y<(g->nbmax); y++){
-                        tabmove1[y]=tabmove[y];
-                    }
-                    tabmove1[x]=i;
-                    solve_aux1(copy, x+1, tabmove1, filename, z, v, a);
+                    tabmove[x]=i;
+                    solve_aux1(copy, x+1, tabmove, z, v, a);
                 }
             }
+        free(tab);
         }
     }
-    game_delete(g);
 }
 
 void solve_aux2(game g, uint x, int *tabmove, uint z, int *v, int*a, int *m){
-    if (x > (g->nbmax)){
+    if (x > (g->nbmax) || x>=m[0]){
         game_delete(g);
     }
     else if (game_is_over(g)){
@@ -211,34 +200,36 @@ void solve_aux2(game g, uint x, int *tabmove, uint z, int *v, int*a, int *m){
             fprintf(stderr,"tab NULL\n");
             exit(EXIT_FAILURE);
         }
-        for (uint i = 0; i<z; i++){
-            if (tab[i]==true){
-                game copy =  game_copy(g);
-                game_play_one_move(copy,i);
-                tabmove[x]=i;
-                solve_aux2(copy, x+1, tabmove, z, v, a, m);
+        else{
+            for (uint i = 0; i<z; i++){
+                if (tab[i]==true){
+                    game copy =  game_copy(g);
+                    game_play_one_move(copy,i);
+                    tabmove[x]=i;
+                    solve_aux2(copy, x+1, tabmove, z, v, a, m);
+                }
             }
+        free(tab);
         }
     }
 }
 
 void FIND_ONE (game g, char *filename) {
-    FILE * f = fopen(filename,"w+");
     color c = game_cell_current_color(g,0,0);
-    int *v=(int*)malloc(sizeof(int)*1);
-    int *a=(int*)malloc((g->nbmax)*sizeof(int));
+    int *v=(int*)malloc(sizeof(int)*1); //tab to know if found solution
+    int *a=(int*)malloc((g->nbmax)*sizeof(int)); //tab with solution
     v[0]=0;
     game_play_one_move(g,c);
-    solve_aux1(g, 0, tab_move(g->nbmax), f, 16, v, a);
-    fclose(f);
+    int z= couleur_tab(g) + 1; //number of differents colors
+    solve_aux1(g, 0, tab_move(g->nbmax), z, v, a);
     if (v[0]==0){
         FILE * f = fopen(filename,"w+");
-        fprintf(f, "NO SOLUTION");
+        fprintf(f, "NO SOLUTION\n");
         fclose(f);
     }else{
         FILE * f = fopen(filename,"w+");
-        uint m = v[0];
-        for(uint i = 0; i<m; i++){
+        uint b = v[0];
+        for(uint i = 0; i<b; i++){
             uint v = a[i];
             if (v>=0 && v<=9){fprintf(f,"%u ",v);}
             if (v==10){fprintf(f,"A ");}
@@ -257,11 +248,10 @@ void FIND_ONE (game g, char *filename) {
 void NB_SOL (game g, char *filename){
     color c = game_cell_current_color(g,0,0);
     game_play_one_move(g,c);
-    int* tabmove = tab_move(g->nbmax);
-    int* v=(int*)malloc(sizeof(int)*1);
+    int *v=(int*)malloc(sizeof(int));
     int m= couleur_tab(g) + 1;
     v[0]=0;
-    solve_aux(g, 0, tabmove, m ,v);
+    solve_aux(g, 0, m ,v);
     if (v[0]==0){
         FILE * f = fopen(filename,"w+");
         fprintf(f, "NO SOLUTION\n");
@@ -271,7 +261,6 @@ void NB_SOL (game g, char *filename){
         fprintf(f, "NB_SOL = %d\n", v[0]);
         fclose(f);
     }
-    free(v);
     return;
 }
 
@@ -279,13 +268,14 @@ void FIND_MIN (game g, char*filename) {
     int *v=(int*)malloc(sizeof(int)*1); //if we found a solution
     int *m=(int*)malloc(sizeof(int)*1); //size of the solution
     int *a=(int*)malloc((g->nbmax)*sizeof(int)); //tab with the final solution
-    m[0]=g->nbmax;
+    m[0]=g->nbmax + 1;
     v[0]=0;
     color c = game_cell_current_color(g,0,0);
     game_play_one_move(g,c);
     int* tabmove = tab_move(g->nbmax);
-    solve_aux2(g, 0, tabmove, 16, v, a, m);
-    if (v[0]==0){
+    int b= couleur_tab(g) + 1;
+    solve_aux2(g, 0, tabmove, b, v, a, m);
+    if (v[0]>(g->nbmax)){
         FILE * f = fopen(filename,"w+");
         fprintf(f, "NO SOLUTION\n");
         fclose(f);
@@ -301,13 +291,12 @@ void FIND_MIN (game g, char*filename) {
             if (v==14){fprintf(f,"E ");}
             if (v==15){fprintf(f,"F ");}
         }
-        fprintf(f,"\n");
         fclose(f);
     }
-    free(m);
-    free(tabmove);
     free(v);
+    free(m);
     free(a);
+    free(tabmove);
 }
 
 int main(int argc, char *argv[]){

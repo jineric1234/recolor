@@ -188,7 +188,7 @@ uint game_nb_moves_max(cgame g) {
 
 uint game_nb_moves_cur(cgame g) {
   test_game(g);
-  uint n = g->nbmovecur;
+  int n = g->nbmovecur;
   return n;
 }
 
