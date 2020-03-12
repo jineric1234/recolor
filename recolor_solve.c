@@ -132,7 +132,7 @@ bool* near_move(game g, uint z){
     return tab;
 }
 
-void solve_aux(game g, uint x, uint z, int *v){
+void solve_nbsol(game g, uint x, uint z, int *v){
     if (game_is_over(g)){
         game_delete(g);
         v[0]=v[0]+1;
@@ -149,14 +149,15 @@ void solve_aux(game g, uint x, uint z, int *v){
             if (tab[i]==true){
                 game copy =  game_copy(g);
                 game_play_one_move(copy,i);
-                solve_aux(copy, x+1, z, v);
+                solve_nbsol(copy, x+1, z, v);
             }
         }
-    free(tab);
+        game_delete(g);
+        free(tab);
     }
 }
 
-void solve_aux1(game g, uint x, int *tabmove, uint z, int *v, int*a){
+void solve_findone(game g, uint x, int *tabmove, uint z, int *v, int*a){
     if (v[0]>=1){
         game_delete(g);
     }
@@ -178,15 +179,16 @@ void solve_aux1(game g, uint x, int *tabmove, uint z, int *v, int*a){
                     game copy =  game_copy(g);
                     game_play_one_move(copy,i);
                     tabmove[x]=i;
-                    solve_aux1(copy, x+1, tabmove, z, v, a);
+                    solve_findone(copy, x+1, tabmove, z, v, a);
                 }
             }
+        game_delete(g);
         free(tab);
         }
     }
 }
 
-void solve_aux2(game g, uint x, int *tabmove, uint z, int *v, int*a, int *m){
+void solve_findmin(game g, uint x, int *tabmove, uint z, int *v, int*a, int *m){
     if (x > (g->nbmax) || x>=m[0]){
         game_delete(g);
     }
@@ -206,9 +208,10 @@ void solve_aux2(game g, uint x, int *tabmove, uint z, int *v, int*a, int *m){
                     game copy =  game_copy(g);
                     game_play_one_move(copy,i);
                     tabmove[x]=i;
-                    solve_aux2(copy, x+1, tabmove, z, v, a, m);
+                    solve_findmin(copy, x+1, tabmove, z, v, a, m);
                 }
             }
+        game_delete(g);
         free(tab);
         }
     }
@@ -219,7 +222,7 @@ void FIND_ONE (game g, char *filename) {
     int *a=(int*)malloc((g->nbmax)*sizeof(int)); //tab with solution
     v[0]=0;
     int z= couleur_tab(g) + 1; //number of differents colors
-    solve_aux1(g, 0, tab_move(g->nbmax), z, v, a);
+    solve_findone(g, 0, tab_move(g->nbmax), z, v, a);
     if (v[0]==0){
         FILE * f = fopen(filename,"w+");
         fprintf(f, "NO SOLUTION\n");
@@ -247,7 +250,7 @@ void NB_SOL (game g, char *filename){
     int *v=(int*)malloc(sizeof(int));
     int m= couleur_tab(g) + 1;
     v[0]=0;
-    solve_aux(g, 0, m ,v);
+    solve_nbsol(g, 0, m ,v);
     if (v[0]==0){
         FILE * f = fopen(filename,"w+");
         fprintf(f, "NO SOLUTION\n");
@@ -257,6 +260,7 @@ void NB_SOL (game g, char *filename){
         fprintf(f, "NB_SOL = %d\n", v[0]);
         fclose(f);
     }
+    free(v);
     return;
 }
 
@@ -268,7 +272,7 @@ void FIND_MIN (game g, char*filename) {
     v[0]=0;
     int* tabmove = tab_move(g->nbmax);
     int b= couleur_tab(g) + 1;
-    solve_aux2(g, 0, tabmove, b, v, a, m);
+    solve_findmin(g, 0, tabmove, b, v, a, m);
     if (v[0]>(g->nbmax)){
         FILE * f = fopen(filename,"w+");
         fprintf(f, "NO SOLUTION\n");
