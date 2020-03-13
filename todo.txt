@@ -1,0 +1,56 @@
+
+fonction laura 
+void game_delete(game g);
+
+bool game_is_over(cgame g);
+
+void game_restart(game g);
+
+bool game_is_wrapping(cgame g)
+
+bool test_iswrapping;
+
+uint game_width(cgame game);
+
+bool test_width;
+
+
+Fonctions Ayoub:
+
+void game_play_one_move(game g, color c);
+
+game game_copy(cgame g);
+
+void game_delete(game g);
+
+game game_new_empty_ext(uint width, uint height, bool wrapping);
+
+bool test_emptyext;
+
+
+Fonctions Eric:
+
+game game_new(color *cells, uint nb_moves_max);
+
+game game_new_empty();
+
+void game_set_cell_init(game g, uint x, uint y, color c);
+
+game game_new_ext(uint width, uint height, color *cells, uint nb_moves_max,  bool wrapping)
+
+bool test_newext;
+
+
+
+Fonctions Zineb:
+
+void game_set_max_moves(game g, uint nb_max_moves);
+
+uint game_nb_moves_max(cgame g);
+
+color game_cell_current_color(cgame g, uint x, uint y);
+
+bool test_height;
+
+uint game_height(cgame game);
+
