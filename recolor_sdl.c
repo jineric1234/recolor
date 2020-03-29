@@ -89,15 +89,23 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
       int color = env->game_played->cell[x*width+y];
       
       //choise of the color based of the number of the case
-      if (color == 0) SDL_SetRenderDrawColor(ren, 255, 0, 255, SDL_ALPHA_OPAQUE);
-      else if (color == 1) SDL_SetRenderDrawColor(ren, 255, 255, 0, SDL_ALPHA_OPAQUE);
-      else if (color == 2) SDL_SetRenderDrawColor(ren, 0, 255, 255, SDL_ALPHA_OPAQUE);
-      else if (color == 3) SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);
-      else if (color == 4) SDL_SetRenderDrawColor(ren, 0, 0, 255, SDL_ALPHA_OPAQUE);
-      else if (color == 5) SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
-      else {
-        fprintf(stderr, "inexistant color!!\n");
-      };
+      if (color == 0 ) SDL_SetRenderDrawColor(ren, 255, 255, 255, SDL_ALPHA_OPAQUE); /*WHITE */
+      else if(color == 1) SDL_SetRenderDrawColor(ren, 192, 192, 192, SDL_ALPHA_OPAQUE);/*SILVER */
+      else if(color == 2) SDL_SetRenderDrawColor(ren, 128, 128, 128, SDL_ALPHA_OPAQUE);/*GRAY */
+      else if(color == 3) SDL_SetRenderDrawColor(ren, 0, 0, 0, SDL_ALPHA_OPAQUE);/*BLACK */
+      else if(color == 4) SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);/*RED */
+      else if(color == 5) SDL_SetRenderDrawColor(ren, 128, 0, 0, SDL_ALPHA_OPAQUE);/*MAROON */
+      else if(color == 6) SDL_SetRenderDrawColor(ren, 255, 255, 0, SDL_ALPHA_OPAQUE);/*YELLOW */
+      else if(color == 7) SDL_SetRenderDrawColor(ren, 128, 128, 0, SDL_ALPHA_OPAQUE);/*OLIVE */
+      else if(color == 8 SDL_SetRenderDrawColor(ren, 0, 128, 0, SDL_ALPHA_OPAQUE);/*GREEN */
+      else if(color == 9) SDL_SetRenderDrawColor(ren, 0, 255, 255, SDL_ALPHA_OPAQUE);/*AQUA */
+      else if(color == 10) SDL_SetRenderDrawColor(ren, 0, 128, 128, SDL_ALPHA_OPAQUE);/*TEAL */
+      else if(color == 11) SDL_SetRenderDrawColor(ren, 0, 0, 255, SDL_ALPHA_OPAQUE);/*BLUE */
+      else if(color == 12) SDL_SetRenderDrawColor(ren, 0, 0, 128, SDL_ALPHA_OPAQUE);/*NAVY */
+      else if(color == 13) SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);/*LIME */
+      else if(color == 14) SDL_SetRenderDrawColor(ren, 255, 0, 255, SDL_ALPHA_OPAQUE);/*FUCHSIA */
+      else if(color == 15) SDL_SetRenderDrawColor(ren, 128, 0, 128, SDL_ALPHA_OPAQUE);/*PURPLE */
+      else {fprintf(stderr, "inexistant color!!\n");};
       
       //shape of the space  
       rect.x = y*case_w;
