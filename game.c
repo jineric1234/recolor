@@ -389,5 +389,8 @@ void game_restart(game g) {
   }
   g->tab_bool[0] = true;
   // we reset the current number of moves
+  game_play_one_move(g,(g->cell[0]));
   g->nbmovecur = 0;
+
+
 }

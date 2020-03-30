@@ -18,7 +18,7 @@
 /* **************************************************************** */
 
 #define FONT "Arial.ttf"
-#define FONTSIZE 20
+#define FONTSIZE 36
 #define BACKGROUND "background.png"
 
 /* **************************************************************** */
@@ -27,8 +27,8 @@
 struct Env_t {  
   SDL_Texture * grid;
   SDL_Texture * text;
-  SDL_Texture * text2;
-
+  SDL_Texture * lose;
+  SDL_Texture * victory;
   game game_played;
 }; 
      
@@ -41,42 +41,30 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   PRINT("To play you need to click in a case with color you want to play! \nWarning: you have a maximum of mouvements you can play.\n");
   PRINT("Good luck!\n");
   PRINT("Press ESC to quit\n");
+
   /*pointer with the gamme loaded*/ 
   env->game_played = game_load(argv[1]);
 
-  /* init text texture using Arial font */
- 
-  char curmove[50]="";
-  char nbmovemax[50]="";
- /* int tempsActuel=0, tempsPrecedent=0;*/
 
-  SDL_Color color = { 0, 0, 0, 255 }; /* blue color in RGBA */
+  SDL_Color color = { 0, 0, 0, 0};
   TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
-  TTF_Font * font2 = TTF_OpenFont(FONT, FONTSIZE);
   if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
-  TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-  TTF_SetFontStyle(font2, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
-  
-  
-  /*tempsActuel = SDL_GetTicks();*/
-  sprintf(curmove,"moves played:%d",game_nb_moves_cur(env->game_played));
-  SDL_Surface * surf = TTF_RenderText_Blended(font, curmove, color); // blended rendering for ultra nice text
-  env->text = SDL_CreateTextureFromSurface(ren, surf);
- /* if((tempsActuel-tempsPrecedent) >= 100){
-    sprintf(curmove,"moves played:%d",game_nb_moves_cur(env->game_played));
-    SDL_FreeSurface(surf);
-    env->text=SDL_CreateTextureFromSurface(ren, surf);
-    tempsPrecedent=tempsActuel;
-  }*/
- 
- sprintf(nbmovemax,"move max:%d",game_nb_moves_max(env->game_played));
-  /*env->text = TTF_RenderText_Shaded(font,curmove,color);*/
-  SDL_Surface * surf2 = TTF_RenderText_Blended(font2, nbmovemax, color);
-   env->text2 = SDL_CreateTextureFromSurface(ren, surf2);
-
+  TTF_SetFontStyle(font, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
+  SDL_Surface * surf = TTF_RenderText_Blended(font, "YOU LOSE!", color); // blended rendering for ultra nice text
+  env->lose = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
-  SDL_FreeSurface(surf2);
   TTF_CloseFont(font);
+
+  env->victory=NULL;
+  SDL_Color color1 = { 0, 0, 0, 0};
+  TTF_Font * font1 = TTF_OpenFont(FONT, FONTSIZE);
+  if(!font1) ERROR("TTF_OpenFont: %s\n", FONT);
+  TTF_SetFontStyle(font1, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
+  SDL_Surface * surf1 = TTF_RenderText_Blended(font1, "YOU WIN!", color1); // blended rendering for ultra nice text
+  env->victory = SDL_CreateTextureFromSurface(ren, surf1);
+  SDL_FreeSurface(surf1);
+  TTF_CloseFont(font1);
+  
   return env;
 }
      
@@ -86,21 +74,19 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
 void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
 {
   SDL_Rect rect;
- 
+  SDL_Rect rect1;
+  SDL_Rect rect2;
+
   /* get current window size */
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
 
-  /* render text texture */
+  //render text texture 
   SDL_QueryTexture(env->text, NULL, NULL, &rect.w, &rect.h);
-  rect.x = 0; 
+  rect.x = w/2 - rect.w/2; 
   rect.y = h-(h*0.05) - rect.h/2; 
   SDL_RenderCopy(ren, env->text, NULL, &rect);
 
-  SDL_QueryTexture(env->text2, NULL, NULL, &rect.w, &rect.h);
-  rect.x = w/2 - rect.w/2; 
-  rect.y = h-(h*0.05) - rect.h/2; 
-  SDL_RenderCopy(ren, env->text2, NULL, &rect);
 
   /* render a grid with lines */
   int height = env->game_played->height;
@@ -109,11 +95,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
   int case_w = w/width;
 
   /*grille exemple*/
-  /*for (int i=1; i<10; i++){
-    SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawLine(ren, 0, (i*100), w, (i*100));
-    SDL_RenderDrawLine(ren,  (i*100),0,  (i*100), h);
-  }*/
   for (int x=0; x<height; x++){
     for (int y=0; y<width; y++){
       int color = env->game_played->cell[x*width+y];
@@ -135,7 +116,6 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
       else if(color == 13) SDL_SetRenderDrawColor(ren, 0, 255, 0, SDL_ALPHA_OPAQUE);/*LIME */
       else if(color == 14) SDL_SetRenderDrawColor(ren, 128, 128, 128, SDL_ALPHA_OPAQUE);/*GRAY */
       else if(color == 15) SDL_SetRenderDrawColor(ren, 128, 0, 128, SDL_ALPHA_OPAQUE);/*PURPLE */
-      else {fprintf(stderr, "inexistant color!!\n");};
       
       //shape of the space  
       rect.x = y*case_w;
@@ -145,6 +125,18 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
       
       SDL_RenderFillRect(ren, &rect);
     }
+
+  //render victory text texture 
+  SDL_QueryTexture(env->victory, NULL, NULL, &rect1.w, &rect1.h);
+  rect1.x = w/2 - rect1.w/2; 
+  rect1.y = h/2 - rect1.h/2; 
+  SDL_RenderCopy(ren, env->victory, NULL, &rect1);
+
+  // render lose text texture
+  SDL_QueryTexture(env->lose, NULL, NULL, &rect2.w, &rect2.h);
+  rect2.x = w/2 - rect2.w/2; 
+  rect2.y = h/2 - rect2.h/2; 
+  SDL_RenderCopy(ren, env->lose, NULL, &rect2);
   }
 }
      
@@ -153,9 +145,29 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env * env)
      
 bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e)
 {     
+  char curmove[50]="";
+
+  /* text with score */
+  SDL_Color color = { 0, 0, 0, 255 }; /* blue color in RGBA */
+  TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
+  if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
+  TTF_SetFontStyle(font, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
+  int max = game_nb_moves_max(env->game_played);
+  int current = game_nb_moves_cur(env->game_played);
+  sprintf(curmove,"moves played:%d / %d",current, max);
+  SDL_Surface * surf = TTF_RenderText_Blended(font, curmove, color); // blended rendering for ultra nice text
+  env->text = SDL_CreateTextureFromSurface(ren, surf);
+  SDL_FreeSurface(surf);
+  TTF_CloseFont(font);
 
   if (e->type == SDL_QUIT) {
     return true;
+  }
+  else if (game_is_over(env->game_played) && current <= max){
+    SDL_Color color1 = { 0, 0, 0, 255 };
+    SDL_Surface * surf1 = TTF_RenderText_Blended(font, "YOU WIN!", color1); // blended rendering for ultra nice text
+    env->victory = SDL_CreateTextureFromSurface(ren, surf1);
+    SDL_FreeSurface(surf1);
   }
 
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
@@ -179,8 +191,9 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e)
     case  SDLK_f: game_play_one_move(env->game_played, 15); break;
     case  SDLK_r: game_restart(env->game_played); break;
     case SDLK_q:  return true; break;
-    case SDLK_ESCAPE:  return true; break;      
+    case SDLK_ESCAPE:  return true; break;     
     }
+
   }
   
   return false; 
@@ -192,6 +205,8 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env)
 {
   /* PUT YOUR CODE HERE TO CLEAN MEMORY */
     SDL_DestroyTexture(env->text);
+    SDL_DestroyTexture(env->lose);
+    SDL_DestroyTexture(env->victory);
     game_delete(env->game_played);
     free(env);
 }
