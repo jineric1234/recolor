@@ -37,7 +37,7 @@ struct Env_t {
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
 {  
-  Env * env = malloc(sizeof(struct Env_t));
+  Env * env = malloc(2*sizeof(struct Env_t));
   PRINT("To play you need to click in a case with color you want to play! \nWarning: you have a maximum of mouvements you can play.\n");
   PRINT("Good luck!\n");
   PRINT("Press ESC to quit\n");
@@ -46,16 +46,18 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   env->game_played = game_load(argv[1]);
 
 
-  SDL_Color color = { 0, 0, 0, 0};
+
   TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
   if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
-  TTF_SetFontStyle(font, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
+
+  
+  /*TTF_SetFontStyle(font, TTF_STYLE_BOLD); // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
   SDL_Surface * surf = TTF_RenderText_Blended(font, "YOU LOSE!", color); // blended rendering for ultra nice text
   env->lose = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
-  TTF_CloseFont(font);
+  TTF_CloseFont(font);*/
 
-  env->victory=NULL;
+  /*env->victory=NULL;
   SDL_Color color1 = { 0, 0, 0, 0};
   TTF_Font * font1 = TTF_OpenFont(FONT, FONTSIZE);
   if(!font1) ERROR("TTF_OpenFont: %s\n", FONT);
@@ -63,7 +65,7 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   SDL_Surface * surf1 = TTF_RenderText_Blended(font1, "YOU WIN!", color1); // blended rendering for ultra nice text
   env->victory = SDL_CreateTextureFromSurface(ren, surf1);
   SDL_FreeSurface(surf1);
-  TTF_CloseFont(font1);
+  TTF_CloseFont(font1);*/
   
   return env;
 }
@@ -159,17 +161,31 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e)
   env->text = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
   TTF_CloseFont(font);
+if (game_is_over(env->game_played)&& (current <= max)){
+
+    SDL_Color color1 = { 0, 0, 0, 128 };
+    TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
+    SDL_Surface * surf2 = TTF_RenderText_Blended(font, "YOU WIN!", color1); // blended rendering for ultra nice text
+    env->victory = SDL_CreateTextureFromSurface(ren, surf2);
+    SDL_FreeSurface(surf2);
+    TTF_CloseFont(font);
+
+  }
+  
+if (!game_is_over(env->game_played) && current > max){
+    SDL_Color color2 = { 0, 0, 0, 255 };
+    
+    TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
+    SDL_Surface * surf3 = TTF_RenderText_Blended(font, "YOU LOSE", color2); // blended rendering for ultra nice text
+    env->lose = SDL_CreateTextureFromSurface(ren, surf3);
+    SDL_FreeSurface(surf3);
+    TTF_CloseFont(font);
+  }
 
   if (e->type == SDL_QUIT) {
     return true;
   }
-  else if (game_is_over(env->game_played) && current <= max){
-    SDL_Color color1 = { 0, 0, 0, 255 };
-    SDL_Surface * surf1 = TTF_RenderText_Blended(font, "YOU WIN!", color1); // blended rendering for ultra nice text
-    env->victory = SDL_CreateTextureFromSurface(ren, surf1);
-    SDL_FreeSurface(surf1);
-  }
-
+  
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
   else if (e->type == SDL_KEYDOWN) {
     switch (e->key.keysym.sym) {
@@ -207,6 +223,7 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env * env)
     SDL_DestroyTexture(env->text);
     SDL_DestroyTexture(env->lose);
     SDL_DestroyTexture(env->victory);
+    SDL_DestroyTexture(env->grid);
     game_delete(env->game_played);
     free(env);
 }
