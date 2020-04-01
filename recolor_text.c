@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "game.h"
 #include "game_io.h"
+#include "game_rand.h"
 
 game game_default(){
     color cell[] =
@@ -52,6 +53,40 @@ void game_display(game g){
          printf("Jouer un coup: (num couleur ou r pour redemarrer ou q pour quitter)\n");
     }
 }
+/*
+int main(void){
+    game g = game_default();
+    game_set_max_moves(g, SIZE);
+    game_display(g);
+
+    while (game_is_over(g)==false){
+        char value= getchar();
+        if (value >= 48 && value <= 51){ valeur de 1, 2, 3 et 0
+            value=value-48;
+            game_play_one_move(g, value);
+            game_display(g);
+        }
+         Restart le jeu 
+        if (value == 82 || value == 114){ valeur de r et R
+            game_restart(g);
+            game_display(g);
+        }
+        
+        Quitter le jeu 
+        if (value == 81 || value == 113){ valeur de q et Q
+            printf("DOMMAGE\n");
+            game_delete(g);
+            return EXIT_SUCCESS;
+        }
+    }
+    if(game_nb_moves_cur(g)<=game_nb_moves_max(g)){
+        printf("BRAVO\n");
+        game_delete(g);
+    }
+
+    return EXIT_SUCCESS;
+
+} */
 
  int play_recolor(game g){
     game_display(g);
@@ -93,10 +128,43 @@ int main(int argc, char *argv[]){
         game g = game_default();
         play_recolor(g);
     }
-    else {
+    else if (argc == 2){
         game g = game_load(argv[1]);
         play_recolor(g);
     }
+    else if (argc <= 4){
+       int width,height,nbmaxmove;
+    sscanf(argv[1],"%d",&width);
+    sscanf(argv[2],"%d",&height);
+    sscanf(argv[3],"%d",&nbmaxmove);
+    game g = game_random_ext(width,height, false, 4,nbmaxmove);
+    play_recolor(g);
+    }
+    else if (argc == 5){
+    int width,height,nbmaxmove, nbcolors;
+    sscanf(argv[1],"%d",&width);
+    sscanf(argv[2],"%d",&height);
+    sscanf(argv[3],"%d",&nbmaxmove);
+    sscanf(argv[4],"%d",&nbcolors);
+    game g = game_random_ext(width,height, false, nbcolors, nbmaxmove);
+    play_recolor(g);
+    }
+    
+   else{
+    int width,height,nbmaxmove,nbcolor;
+    char wrapping;
+    sscanf(argv[1],"%d",&width);
+    sscanf(argv[2],"%d",&height);
+    sscanf(argv[3],"%d",&nbmaxmove);
+    sscanf(argv[4],"%d",&nbcolor);
+    sscanf(argv[5],"%c",&wrapping);
+    bool wrapping_g;
+    if (wrapping=='S') wrapping_g = true;
+    else wrapping_g = false;
+    //argv[1], argv[2], wrapping, argv[4], argv[3]
+    game g = game_random_ext(width,height,wrapping_g,nbcolor,nbmaxmove);
+    play_recolor(g);
+  }
 }
 
 /* Laura ALANOIX */
