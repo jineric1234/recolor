@@ -13,7 +13,9 @@
 #include "game_io.h"
 #include "game.h"
 #include "game.c"
+#include "recolor_text.c"
 #include "recolor_sdl.h"
+#include "game_rand.h"
 
 /* **************************************************************** */
 
@@ -42,8 +44,17 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   PRINT("Good luck!\n");
   PRINT("Press ESC to quit\n");
 
-  /*pointer with the gamme loaded*/ 
-  env->game_played = game_load(argv[1]);
+  /*pointer with the gamme loaded*/
+  if (argc = 1) env->game_played = game_default();
+  else if (argc = 2) env->game_played = game_load(argv[1]); 
+  else if (argc <= 4){
+    env->game_played = game_random_ext(argv[1], argv[2], false, 4, argv[3]);
+  }
+  else{
+    bool wrapping = false;
+    if (argv[5]=='S') wrapping = true;
+    env->game_played = game_random_ext(argv[1], argv[2], wrapping, argv[4], argv[3]);
+  }
 
   TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
   if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
