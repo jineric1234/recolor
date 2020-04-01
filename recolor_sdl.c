@@ -40,7 +40,7 @@ struct Env_t {
      
 Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
 {  
-  Env * env = malloc(2*sizeof(struct Env_t));
+  Env * env = malloc(sizeof(struct Env_t));
   PRINT("To play you need to click in a case with color you want to play! \nWarning: you have a maximum of mouvements you can play.\n");
   PRINT("Good luck!\n");
   PRINT("Press ESC to quit\n");
@@ -69,19 +69,29 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
     sscanf(argv[1],"%d",&width);
     sscanf(argv[2],"%d",&height);
     sscanf(argv[3],"%d",&nbmaxmove);
-    env->game_played = game_random_ext(/*argv[1], argv[2]*/width,height, false, 4,nbmaxmove/* argv[3]*/);
+    env->game_played = game_random_ext(width,height, false, 4,nbmaxmove);
+  }
+  else if (argc == 5){
+    int width,height,nbmaxmove, nbcolors;
+    sscanf(argv[1],"%d",&width);
+    sscanf(argv[2],"%d",&height);
+    sscanf(argv[3],"%d",&nbmaxmove);
+    sscanf(argv[4],"%d",&nbcolors);
+    env->game_played = game_random_ext(width,height, false, nbcolors, nbmaxmove);
   }
   else{
-     int width,height,nbmaxmove,nbcolor;
+    int width,height,nbmaxmove,nbcolor;
+    char wrapping;
     sscanf(argv[1],"%d",&width);
     sscanf(argv[2],"%d",&height);
     sscanf(argv[3],"%d",&nbmaxmove);
     sscanf(argv[4],"%d",&nbcolor);
-    /*bool wrapping = false;
-    char s[] = "S";
-    sscanf(argv[5],"%c",&s);
-    if (argv[5]==s) wrapping = true;*/
-    env->game_played = game_random_ext(/*argv[1], argv[2], wrapping, argv[4], argv[3]*/width,height,false,nbcolor,nbmaxmove);
+    sscanf(argv[5],"%c",&wrapping);
+    bool wrapping_g;
+    if (wrapping=='S') wrapping_g = true;
+    else wrapping_g = false;
+    //argv[1], argv[2], wrapping, argv[4], argv[3]
+    env->game_played = game_random_ext(width,height,wrapping_g,nbcolor,nbmaxmove);
   }
 
   TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
@@ -251,6 +261,20 @@ if (!game_is_over(env->game_played) && current > max && env->victory==NULL){
     case SDLK_ESCAPE:  return true; break;     
     }
 
+  }
+  else if (e->type == SDL_MOUSEBUTTONDOWN) {
+    SDL_Point mouse; 
+    SDL_GetMouseState(&mouse.x, &mouse.y);    
+    int w, h, x_m, y_m;
+    SDL_GetWindowSize(win, &w, &h);
+    if (mouse.y<(h-h*0.1)){
+      int x_case = w/(env->game_played->width);
+      int y_case = (h-(h*0.1))/(env->game_played->height);
+      x_m = mouse.x/x_case;
+      y_m = mouse.y/y_case;
+      int c = game_cell_current_color(env->game_played,x_m,y_m);
+      if (c!=game_cell_current_color(env->game_played,0,0)) game_play_one_move(env->game_played,c);
+    }
   }
   
   return false; 
