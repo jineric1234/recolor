@@ -13,9 +13,10 @@
 #include "game_io.h"
 #include "game.h"
 #include "game.c"
-#include "recolor_text.c"
 #include "recolor_sdl.h"
 #include "game_rand.h"
+#include "game_rand.c"
+
 
 /* **************************************************************** */
 
@@ -45,15 +46,42 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   PRINT("Press ESC to quit\n");
 
   /*pointer with the gamme loaded*/
-  if (argc = 1) env->game_played = game_default();
-  else if (argc = 2) env->game_played = game_load(argv[1]); 
+  if (argc == 1){
+    color cell[] =
+    { 0,0,0,2,0,2,1,0,1,0,3,0,
+      0,3,3,1,1,1,1,3,2,0,1,0,
+      1,0,1,2,3,2,3,2,0,3,3,2,
+      2,3,1,0,3,2,1,1,1,2,2,0,
+      2,1,2,3,3,3,3,2,0,1,0,0,
+      0,3,3,0,1,1,2,3,3,2,1,3,
+      1,1,2,2,2,0,0,1,3,1,1,2,
+      1,3,1,3,1,0,1,0,1,3,3,3,
+      0,3,0,1,0,0,2,1,1,1,3,0,
+      1,3,1,0,0,0,3,2,3,1,0,0,
+      1,3,3,1,1,2,2,3,2,0,0,2,
+      2,0,2,3,0,1,1,1,2,3,0,1,
+    };
+    env->game_played = game_new_ext(SIZE, SIZE, cell, 12, false);
+  }
+  else if (argc == 2) env->game_played = game_load(argv[1]); 
   else if (argc <= 4){
-    env->game_played = game_random_ext(argv[1], argv[2], false, 4, argv[3]);
+    int width,height,nbmaxmove;
+    sscanf(argv[1],"%d",&width);
+    sscanf(argv[2],"%d",&height);
+    sscanf(argv[3],"%d",&nbmaxmove);
+    env->game_played = game_random_ext(/*argv[1], argv[2]*/width,height, false, 4,nbmaxmove/* argv[3]*/);
   }
   else{
-    bool wrapping = false;
-    if (argv[5]=='S') wrapping = true;
-    env->game_played = game_random_ext(argv[1], argv[2], wrapping, argv[4], argv[3]);
+     int width,height,nbmaxmove,nbcolor;
+    sscanf(argv[1],"%d",&width);
+    sscanf(argv[2],"%d",&height);
+    sscanf(argv[3],"%d",&nbmaxmove);
+    sscanf(argv[4],"%d",&nbcolor);
+    /*bool wrapping = false;
+    char s[] = "S";
+    sscanf(argv[5],"%c",&s);
+    if (argv[5]==s) wrapping = true;*/
+    env->game_played = game_random_ext(/*argv[1], argv[2], wrapping, argv[4], argv[3]*/width,height,false,nbcolor,nbmaxmove);
   }
 
   TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
