@@ -92,26 +92,26 @@ void game_color_neighbors(game g, color c_new, uint x, uint y) {
   if (game_is_wrapping(g)) {
     // (x,y) <=> y*game_width(g)+x
     // upper cell : (x,game_height(g)-1) <=> (game_height(g)-1)*game_width(g)+x
-    if (y == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, game_height(g) - 1) == c_new) {
+    if (y == 0 && !g->tab_bool[(game_height(g) - 1) * game_width(g) + x] && game_cell_current_color(g, x, game_height(g) - 1) == c_new) {
       // color the cell and call function on its neighbors
       g->cell[(game_height(g) - 1) * game_width(g) + x] = c_new;
       g->tab_bool[(game_height(g) - 1) * game_width(g) + x] = true;
       game_color_neighbors(g, c_new, x, game_height(g) - 1);
     }
     // lower cell : (x,0) <=> x
-    if (y == game_height(g) - 1 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, x, 0) == c_new) {
+    if (y == game_height(g) - 1 && !g->tab_bool[x] && game_cell_current_color(g, x, 0) == c_new) {
       g->cell[x] = c_new;
       g->tab_bool[x] = true;
       game_color_neighbors(g, c_new, x, 0);
     }
     // left cell : (game_width(g)-1,y) <=> y*game_width(g)+game_width(g)-1
-    if (x == 0 && !g->tab_bool[y*game_width(g)+x] && game_cell_current_color(g, game_width(g) - 1, y) == c_new) {
+    if (x == 0 && !g->tab_bool[(y*game_width(g))+(game_width(g)-1)] && game_cell_current_color(g, game_width(g) - 1, y) == c_new) {
       g->cell[y * game_width(g) + game_width(g) - 1] = c_new;
       g->tab_bool[y * game_width(g) + game_width(g) - 1] = true;
       game_color_neighbors(g, c_new, game_width(g) - 1, y);
     }
     // right cell : (0,y) <=> y*game_width(g)
-    if (x == game_width(g) - 1 && !g->tab_bool[y*game_width(g)+x] &&  game_cell_current_color(g, 0, y) == c_new) {
+    if (x == game_width(g) - 1 && !g->tab_bool[y*game_width(g)] &&  game_cell_current_color(g, 0, y) == c_new) {
       g->cell[y * game_width(g)] = c_new;
       g->tab_bool[y * game_width(g)] = true;
       game_color_neighbors(g, c_new, 0, y);
@@ -215,10 +215,9 @@ game game_new_ext(uint width, uint height, color* cells, uint nb_moves_max, bool
   tab_init[0] = true;
   // we set the other parameters
   set_in_struct(new_ext, t, t_init, nb_moves_max, 0, width, height, wrapping, tab_init);
-  if (new_ext->nbmovecur==0){
-    int v = new_ext->cell[0];
-    game_color_neighbors(new_ext,v,0,0);
-  }
+  int v = new_ext->cell[0];
+  game_color_neighbors(new_ext,v,0,0);
+
   // we return the game
   return new_ext;
 }

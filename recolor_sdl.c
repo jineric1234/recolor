@@ -45,8 +45,6 @@ Env * init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[])
   /*pointer with the gamme loaded*/ 
   env->game_played = game_load(argv[1]);
 
-
-
   TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
   if(!font) ERROR("TTF_OpenFont: %s\n", FONT);
 
@@ -161,20 +159,18 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env * env, SDL_Event * e)
   env->text = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
   TTF_CloseFont(font);
-if (game_is_over(env->game_played)&& (current <= max)){
 
+//text victoire defaite
+if (game_is_over(env->game_played)&& (current <= max)){
     SDL_Color color1 = { 0, 0, 0, 128 };
     TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
     SDL_Surface * surf2 = TTF_RenderText_Blended(font, "YOU WIN!", color1); // blended rendering for ultra nice text
     env->victory = SDL_CreateTextureFromSurface(ren, surf2);
     SDL_FreeSurface(surf2);
     TTF_CloseFont(font);
-
   }
-  
-if (!game_is_over(env->game_played) && current > max){
+if (!game_is_over(env->game_played) && current > max && env->victory==NULL){
     SDL_Color color2 = { 0, 0, 0, 255 };
-    
     TTF_Font * font = TTF_OpenFont(FONT, FONTSIZE);
     SDL_Surface * surf3 = TTF_RenderText_Blended(font, "YOU LOSE", color2); // blended rendering for ultra nice text
     env->lose = SDL_CreateTextureFromSurface(ren, surf3);
@@ -205,7 +201,13 @@ if (!game_is_over(env->game_played) && current > max){
     case  SDLK_d: game_play_one_move(env->game_played, 13); break;
     case  SDLK_e: game_play_one_move(env->game_played, 14); break;
     case  SDLK_f: game_play_one_move(env->game_played, 15); break;
-    case  SDLK_r: game_restart(env->game_played); break;
+    case  SDLK_r: {
+      game_restart(env->game_played); 
+      env->victory=NULL;
+      env->lose=NULL;    
+      
+      break;
+    }
     case SDLK_q:  return true; break;
     case SDLK_ESCAPE:  return true; break;     
     }
