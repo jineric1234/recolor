@@ -13,9 +13,10 @@ add_executable(recolor_solve recolor_solve.c)
 add_executable(recolor_text game.h game_io.h recolor_text.c)
 #les dépendances sont calculées automatiquement
 
+add_library(game_rand game_rand.c game_rand.h)
 add_library(game game.c game_io.c)
 
-target_link_libraries(recolor_text game)
+target_link_libraries(recolor_text game game_rand)
 
 # pkg-config --list-all  | grep -i sdl2
 include(FindPkgConfig)
