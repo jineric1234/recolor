@@ -1,0 +1,1 @@
+/usr/bin/cc -std=c99 -Wall  -rdynamic CMakeFiles/recolor_text.dir/recolor_text.c.o  -o recolor_text  libgame.a libgame_rand.a 

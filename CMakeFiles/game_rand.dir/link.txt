@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgame_rand.a  CMakeFiles/game_rand.dir/game_rand.c.o
+/usr/bin/ranlib libgame_rand.a

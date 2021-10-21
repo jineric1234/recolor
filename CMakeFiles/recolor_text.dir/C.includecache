@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eric/Documents/recolor-tm7-e/game.h
+stdbool.h
+-
+
+/home/eric/Documents/recolor-tm7-e/game_io.h
+stdio.h
+-
+game.h
+/home/eric/Documents/recolor-tm7-e/game.h
+
+/home/eric/Documents/recolor-tm7-e/game_rand.h
+game.h
+/home/eric/Documents/recolor-tm7-e/game.h
+
+/home/eric/Documents/recolor-tm7-e/recolor_text.c
+stdlib.h
+-
+stdio.h
+-
+game.h
+/home/eric/Documents/recolor-tm7-e/game.h
+game_io.h
+/home/eric/Documents/recolor-tm7-e/game_io.h
+game_rand.h
+/home/eric/Documents/recolor-tm7-e/game_rand.h
+

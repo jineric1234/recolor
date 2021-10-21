@@ -1,0 +1,1 @@
+/usr/bin/cc -std=c99 -Wall  -rdynamic CMakeFiles/recolor_sdl.dir/main.c.o CMakeFiles/recolor_sdl.dir/recolor_sdl.c.o  -o recolor_sdl  -lSDL2 -lSDL2_image -lSDL2 -lSDL2_ttf -lSDL2 -lm -lSDL2_image -lSDL2_ttf -lm 

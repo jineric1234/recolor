@@ -1,0 +1,1 @@
+/usr/bin/cc -std=c99 -Wall  -rdynamic CMakeFiles/test_game_ejin.dir/test_game_ejin.c.o  -o test_game_ejin 
